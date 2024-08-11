@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "eleventy --serve & tailwindcss -i ./src/css/tailwind.css -o ./_site/css/style.css --watch",
+    "build:prod": "eleventy & tailwindcss -i ./src/css/tailwind.css -o ./_site/css/style.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,5 +13,8 @@
   "description": "",
   "dependencies": {
     "@11ty/eleventy": "^2.0.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.9"
   }
 }
