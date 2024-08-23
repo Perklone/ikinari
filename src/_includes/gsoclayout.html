@@ -7,7 +7,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
     </style>
-    <title>The Website</title>
+    <title>{{ header }}</title>
 </head>
 <body>
     <div class="flex justify-center gap-x-24 pl-8 pr-8 pt-8">
@@ -34,9 +34,9 @@
     </div>
     <div class="font-mono flex flex-row justify-center gap-x-8 pt-2">
         <a href = "https://drive.google.com/file/d/1P5OHWCivJj0fDHv7VUw5Qum_PeoV9CY4/view?usp=drive_link">Repository</a>
-        <a href = "https://drive.google.com/file/d/1P5OHWCivJj0fDHv7VUw5Qum_PeoV9CY4/view?usp=drive_link">Story</a>
+        <a href = "https://miggy.moe/gsoc24/experience">Story</a>
     </div>
     <h2 class="font-dmserif text-center px-8 pt-12 pb-8 text-4xl">{{ title }} </h2>
-    <div class="px-8 py-8 md:px-64 flex flex-col gap-y-2 text-lg"> {{ content }} </div>
+    <div class="px-8 py-8 md:px-80 flex flex-col gap-y-2 text-lg content-area"> {{ content }} </div>
 </body>
 </html>

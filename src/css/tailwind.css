@@ -2,4 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.content-area a {
+    @apply underline-offset-1 text-gray-500	italic;
+}
