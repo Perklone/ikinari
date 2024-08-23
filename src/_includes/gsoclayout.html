@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/style.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+    </style>
+    <title>The Website</title>
+</head>
+<body>
+    <div class="flex justify-center gap-x-24 pl-8 pr-8 pt-8">
+        <div class="w-40 flex items-center justify-center">
+            <picture class="">
+                <a href="https://summerofcode.withgoogle.com/">
+                    <img alt="Google Summer of Code" src="../../img/GSoC-Vertical.png" height="120">
+                </a>
+            </picture>
+        </div>
+
+        <div class="w-60 flex items-center justify-center">
+            <picture>
+                <a href="https://scala.epfl.ch/">
+                    <img alt="Scala Center" src="../../img/scala-center-logo.png" height="40">
+                </a>
+            </picture>
+        </div>
+    </div>
+    <div class="font-mono flex flex-row justify-center gap-x-8">
+        <a href = "https://summerofcode.withgoogle.com/programs/2024/projects/CkctbYJJ">Project Page</a>
+        <a href = "https://github.com/VirtusLab/scala-cli/issues/610">Github Issue</a>
+        <a href = "https://github.com/Perklone/scala-cli">Repository</a>
+    </div>
+    <div class="font-mono flex flex-row justify-center gap-x-8 pt-2">
+        <a href = "https://drive.google.com/file/d/1P5OHWCivJj0fDHv7VUw5Qum_PeoV9CY4/view?usp=drive_link">Repository</a>
+        <a href = "https://drive.google.com/file/d/1P5OHWCivJj0fDHv7VUw5Qum_PeoV9CY4/view?usp=drive_link">Story</a>
+    </div>
+    <h2 class="font-dmserif text-center px-8 pt-12 pb-8 text-4xl">{{ title }} </h2>
+    <div class="px-8 py-8 md:px-64 flex flex-col gap-y-2 text-lg"> {{ content }} </div>
+</body>
+</html>
