@@ -1,6 +1,7 @@
 ---
 "layout": "gsoclayout.html"
 "title" : "Two-time the charm! Google Summer of Code 2024 for Scala Center"
+"header": "Rizky Maulana GSoC24 story"
 ---
 
 ## Introduction
