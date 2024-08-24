@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'dmserif': ['"DM Serif Display"', "serif"]
+        'dmserif': ['"DM Serif Display"', "serif"],
+        'ebgaramond': ['EB Garamond', "serif"]
       }
     },
   },

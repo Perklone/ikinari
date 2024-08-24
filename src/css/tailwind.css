@@ -3,5 +3,17 @@
 @tailwind utilities;
 
 .content-area a {
-    @apply underline-offset-1 text-gray-500	italic;
+    @apply underline-offset-1 text-orange-400	italic;
+}
+
+.content-area h2 {
+    @apply flex text-3xl font-dmserif;
+}
+
+.content-area img {
+    @apply px-8 py-2;
+}
+
+.content-area ul {
+    @apply list-disc
 }
