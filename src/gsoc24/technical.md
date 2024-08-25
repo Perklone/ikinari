@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This is the the documents of what goes through in the project in my Google Summer of Code program with Scala Center. Where I (hopefully can) explain how this project actually work inside Scala-CLI, and what are the initial concept that we have to the final design that We (Me and the mentors) ended up with. To read more about the non-technical aspect of my journey in GSoC, you can check it out [here](https://miggy.moe/gsoc24/experience).
+This is the documents of what goes through in the project in my Google Summer of Code program with Scala Center. Where I (hopefully can) explain how this project actually work inside Scala-CLI, and what are the initial concept that we have to the final design that We (Me and the mentors) ended up with. To read more about the non-technical aspect of my journey in GSoC, you can check it out [here](https://miggy.moe/gsoc24/experience).
 
 ## What is this project even about, anyway?
 

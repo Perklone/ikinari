@@ -23,12 +23,75 @@ After the interview process, all I have to do is waiting if the good news will c
 ## Preparation Period and Catching-up
 I have very little experience with Scala by the time I got accepted, so most of my time during this phase is to familiarize myself with the language so by the time that the coding period started, I will be blocked less with my language knowledge. The tutorial that I used for getting up to speed is [RockTheJVM's Scala 3 course](https://rockthejvm.com/p/scala). It's quite expensive to buy the one-time purchase, so I bought a month subscription instead. Very worth it, but very hard aswell.
 
+What did I learn in preparation for this project? Quite a lot actually. One concept that sticks to me from the start until or even going beyong the end of the program is the concept of **Functional Programming**. Scala, although based on JVM runtimes, same as Java, is very different from it's OOP-heavy sister language. I learned a lot about *Immutability*, *Function as Values*, and one that I liked most, [*Currying*](https://www.baeldung.com/scala/currying).
+
+I also tried using Scala-CLI as my build tool, that means, creating a simple project using Scala that will be run with Scala-CLI. One project that I created is a clone of UNIX command for counting the size, word and lines of a file, `wc`.
+
+```
+import scala.io.Source
+import scala.compiletime.ops.double
+@main def CCWC(argument: String, file: String): Unit = {
+  argument match
+    case "-c" =>
+      val fileSize = countByte(file)
+      println(s"  $fileSize $file")
+    case "-l" =>
+      val fileLines = countLine(file)
+      println(s"  $fileLines $file")
+    case "-w" =>
+      val fileWords = countWord(file)
+      println(s"  $fileWords $file")
+    case _ => println("Invalid Argument.")
+}
+
+def countByte(file: String): Integer = {
+  Source
+    .fromFile(file)
+    .mkString
+    .getBytes()
+    .length
+}
+
+def countLine(file: String): Integer = {
+  Source
+    .fromFile(file)
+    .getLines()
+    .length
+}
+
+def countWord(file: String): Integer = {
+  Source
+    .fromFile(file)
+    .mkString
+    .trim
+    .split("[\n ]")
+    .length
+}
+```
+
+and then you can run it in Scala-CLI:
+```
+scala-cli run wc.scala
+```
+
+or you can package it as an executable:
+```
+scala-cli --power package ccwc.scala
+```
+
+Scala-CLI is awesome for this kind of simple work, such a lovely tool <3.
+
 So what did I do during my program at Scala Center? The first thing that I did is attend the meetup that the host created for [all contributors at Scala Center](https://www.linkedin.com/posts/scala-center_google-summer-of-code-activity-7213908994329821184-I1L6?utm_source=share&utm_medium=member_desktop), there were 10 contributors that are accepted to the program, working on various project that the Scala Center has, such as Scaladex, Scaladoc, and others.
 
-## Learning from the Program
-This program was not easy, in the middle of the program, there are multiple times that I felt like giving up due to the complexity of the project. This is Impostor Syndrome at its finest, and it happened often. I'm really thankful that I have mentors that are really supportive and they kept helping me pushing through and finally finished the project. 
+After that it's all work on the project, we did alot of pair programming, we held weekly sync-up to discuss our progress and set checkpoint so we can measure how far we are from finishing the project.
 
-I learned a lot, and there are a few things that I wanted to share:
+## Learning from the Program
+This program was not easy, in the middle of the program, there are multiple times that I felt like giving up due to the complexity of the project. Everything that I tried was not working, error was everywhere. This is Impostor Syndrome at its finest, and it happened often. I received this message after my midterm evaluation:
+
+![Midterm Evaluation Feedback](../../img/gsoc24/experience-2.png)
+
+
+This is everything that I need to push until the final evaluation. I'm really thankful that I have mentors that are really supportive and they kept helping me pushing through and finally finished the project. I learned a lot, and there are a few things that I wanted to share:
 
 *1. Be Transparent regarding your progress*
 
