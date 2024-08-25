@@ -69,7 +69,11 @@ This is the concept that we came up with:
 //> using sourceGenerator "${.}/source-generator-input|glob:test.in|python3 ${.}/source-generator-1.py"
 ```
 
-Scala-CLI will fetch the value of this directive and store it as `"${.}/source-generator-input|glob:test.in|python3 ${.}/source-generator-1.py`" Then we will parse it based on the separator `"|"` that we created to split the value. 
+Scala-CLI will fetch the value of this directive and store it as 
+```
+"${.}/source-generator-input|glob:test.in|python3 ${.}/source-generator-1.py"
+``` 
+Then we will parse it based on the separator `"|"` that we created to split the value. 
 
 To store all of this splitted value, we created a new Config called `GeneratorConfig`. This Config then will be passed into list of options that [will be run when Scala-CLI is invoked](https://github.com/Perklone/scala-cli/blob/e2c50093ca068858ebdc04c7f916750f6c288949/modules/build/src/main/scala/scala/build/Project.scala#L90). The prototype of this feature is the milestone for my Midterm Evaluation.
 
