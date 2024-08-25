@@ -5,7 +5,7 @@
 ---
 
 ## Introduction
-Who would have thought that I would be participating in Google Summer of Code again! I certainly didn’t, but here we are. It has been an amazing and difficult experience, and also really rewarding. I hope that this writing motivates anyone that wants to participate in this great program and learn from my experience. The project started from May, and ended on August (I chose the medium-sized project). If you want to learn more about the project itself, you can access it [here]("https://miggy.moe/gsoc24") or click on the Home section.
+Who would have thought that I would be participating in Google Summer of Code again! I certainly didn’t, but here we are. It has been an amazing and difficult experience, and also really rewarding. I hope that this writing motivates anyone that wants to participate in this great program and learn from my experience. The project started from May, and ended on August (I chose the medium-sized project). If you want to learn more about the project itself, you can access it [here](https://miggy.moe/gsoc24) or click on the Home section.
 
 
 
@@ -14,16 +14,16 @@ It is important to note that I participated in this project without ever writing
  ![Inquiry Email](../../img/gsoc24/email-1.png)
 
 
-The first thing that I did before I create my proposal is to email my to-be mentor, [Jamie]("https://www.linkedin.com/in/james-richard-thompson/"). I asked him about what to expect in this project, how big is the scope of work going to be, and asked if I can try creating a proposal to work on this for this year GSoC. We then create a meeting to discuss the point that I brought up, and told me that I should go ahead and participate.
+The first thing that I did before I create my proposal is to email my to-be mentor, [Jamie](https://www.linkedin.com/in/james-richard-thompson/). I asked him about what to expect in this project, how big is the scope of work going to be, and asked if I can try creating a proposal to work on this for this year GSoC. We then create a meeting to discuss the point that I brought up, and told me that I should go ahead and participate.
 
 A week after the initial meeting which around early April, I was called for an interview to discuss regarding my experience, motivation and technical abilities for this project. The things that we discussed includes "How did I discover this project?", "How familiar are you with Scala and build tool domain?", and we talked about time commitment and other topic related to my timeline estimation for the project.
 
 After the interview process, all I have to do is waiting if the good news will come. Fortunately, it did. on May 2nd, I received the informal email that I have been accepted to work on Scala Center.
 
 ## Preparation Period and Catching-up
-I have very little experience with Scala by the time I got accepted, so most of my time during this phase is to familiarize myself with the language so by the time that the coding period started, I will be blocked less with my language knowledge. The tutorial that I used for getting up to speed is [RockTheJVM's Scala 3 course]("https://rockthejvm.com/p/scala"). It's quite expensive to buy the one-time purchase, so I bought a month subscription instead. Very worth it, but very hard aswell.
+I have very little experience with Scala by the time I got accepted, so most of my time during this phase is to familiarize myself with the language so by the time that the coding period started, I will be blocked less with my language knowledge. The tutorial that I used for getting up to speed is [RockTheJVM's Scala 3 course](https://rockthejvm.com/p/scala). It's quite expensive to buy the one-time purchase, so I bought a month subscription instead. Very worth it, but very hard aswell.
 
-So what did I do during my program at Scala Center? The first thing that I did is attend the meetup that the host created for [all contributors at Scala Center]("https://www.linkedin.com/posts/scala-center_google-summer-of-code-activity-7213908994329821184-I1L6?utm_source=share&utm_medium=member_desktop"), there were 10 contributors that are accepted to the program, working on various project that the Scala Center has, such as Scaladex, Scaladoc, and others.
+So what did I do during my program at Scala Center? The first thing that I did is attend the meetup that the host created for [all contributors at Scala Center](https://www.linkedin.com/posts/scala-center_google-summer-of-code-activity-7213908994329821184-I1L6?utm_source=share&utm_medium=member_desktop), there were 10 contributors that are accepted to the program, working on various project that the Scala Center has, such as Scaladex, Scaladoc, and others.
 
 ## Learning from the Program
 This program was not easy, in the middle of the program, there are multiple times that I felt like giving up due to the complexity of the project. This is Impostor Syndrome at its finest, and it happened often. I'm really thankful that I have mentors that are really supportive and they kept helping me pushing through and finally finished the project. 
@@ -40,6 +40,6 @@ When you are stuck on a problem, it's sometimes hard to explain on exactly what 
 
 ## Conclusion
 
-This year Google Summer of Code is probably one of the hardest task that I have ever took ever since I touched programming. But that particular moment, where the project finally finished, and it ran properly for the first time, there's no feeling that could beat that. Make sure to check my technical documentation for this project in [technical docs]("https://miggy.moe/gsoc24/technical") to know the inner working of what I did during this program.
+This year Google Summer of Code is probably one of the hardest task that I have ever took ever since I touched programming. But that particular moment, where the project finally finished, and it ran properly for the first time, there's no feeling that could beat that. Make sure to check my technical documentation for this project in [technical docs](https://miggy.moe/gsoc24/technical) to know the inner working of what I did during this program.
 
 Thank you for reading this everyone!
