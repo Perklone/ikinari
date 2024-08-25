@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@fontsource/geist-mono';
+
 .content-area a {
     @apply underline-offset-1 text-orange-400	italic;
 }
@@ -16,4 +18,11 @@
 
 .content-area ul {
     @apply list-disc
+}
+
+.content-area pre {
+    @apply bg-slate-900 p-2 md:p-4 rounded-lg overflow-x-auto text-gray-100
+}
+.content-area code {
+    @apply font-geistmono text-xs sm:text-sm md:text-lg whitespace-pre 
 }
