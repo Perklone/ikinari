@@ -6,7 +6,8 @@ module.exports = {
       fontFamily: {
         'dmserif': ['"DM Serif Display"', "serif"],
         'ebgaramond': ['EB Garamond', "serif"],
-        'geistmono': ['Geist Mono', "monospace"]
+        'geistmono': ['Geist Mono', "monospace"],
+        'dmsans': ['DM Sans', "serif"]
       }
     },
   },
