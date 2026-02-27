@@ -1,20 +1,37 @@
----
-title: My Rad Blog
----
-
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
-</style>
-  <link href="/css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/style.css" rel="stylesheet">
+    <title>{{ title }} — Perklone</title>
 </head>
-<body>
-  <h1 class="text-3xl text-blue-800 font-bold underline">
-    {{ title }}
-  </h1>
+<body class="bg-[#f3f1ec] text-dark-gray min-h-screen">
+
+    <!-- Top nav -->
+    <header class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-8 sm:pt-12 flex items-center justify-between">
+        <a href="/" class="font-dmserif text-lg text-dark-gray hover:text-red-accent transition-colors">Perklone</a>
+        <a href="/#writing" class="font-geistmono text-xs text-dark-gray/40 hover:text-dark-gray transition-colors">all writings</a>
+    </header>
+
+    <!-- Article -->
+    <article class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-16 sm:pb-24">
+        <!-- Meta -->
+        <time class="font-geistmono text-xs sm:text-sm text-dark-gray/40 block mb-4">{{ date | postDate }}</time>
+
+        <!-- Title -->
+        <h1 class="font-dmserif text-3xl sm:text-4xl md:text-5xl leading-tight text-dark-gray mb-8 sm:mb-12">{{ title }}</h1>
+
+        <!-- Content -->
+        <div class="content-area font-dmsans text-base sm:text-lg leading-relaxed sm:leading-relaxed text-dark-gray/80 flex flex-col gap-y-5 sm:gap-y-6">
+            {{ content | safe }}
+        </div>
+    </article>
+
+    <!-- Footer nav -->
+    <footer class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pb-12 sm:pb-16 border-t border-dark-gray/10 pt-6">
+        <a href="/#writing" class="font-geistmono text-xs text-dark-gray/40 hover:text-dark-gray transition-colors">&larr; Back to writings</a>
+    </footer>
+
 </body>
 </html>

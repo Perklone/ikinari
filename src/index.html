@@ -1,23 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/style.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
-        </style>
-    <title>The Website</title>
+    <title>Perklone</title>
 </head>
-<body>
-    <div class="flex items-center justify-between h-screen ml-9 mr-9">
-        <div class="flex flex-col justify-center h-screen pl-5 pr-5 basis-1/2">
-            <h1 class="italic text-left font-dmserif text-7xl">Rizky Maulana</h1>
-            <p class="font-mono pt-2 text-gray-400"> Work in Progress!</p>
+<body class="bg-[#f3f1ec] text-dark-gray min-h-screen overflow-x-hidden">
+
+    <!-- Hero Section — full screen -->
+    <section class="min-h-screen relative flex items-center py-12 sm:py-0 md:h-screen md:min-h-0 md:overflow-hidden" style="overflow-anchor:none">
+        <div class="w-full max-w-[1100px] mx-auto flex flex-col-reverse md:flex-row items-center md:items-end px-5 sm:px-8 md:px-12 gap-8 md:gap-12 md:h-full">
+            <!-- Text -->
+            <div class="md:w-1/2 md:shrink-0 md:pb-24 z-10 fade-in text-center">
+                <h1 class="font-dmserif leading-tight text-dark-gray">
+                    <span id="display-name" class="hover:text-red-accent inline-block cursor-pointer transition-all duration-200 text-5xl md:text-6xl lg:text-9xl" style="opacity:1;transform:translateY(0)">Perklone</span>
+                </h1>
+                <button id="swap-btn" class="mt-2 text-dark-gray/50 transition-colors" aria-label="Toggle name">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                </button>
+                <nav class="flex gap-2 sm:gap-3 mt-4 sm:mt-5 justify-center flex-wrap fade-in fade-in-delay-1">
+                    <a href="#" class="font-dmsans text-xs sm:text-sm text-dark-gray/60 hover:text-dark-gray px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/70 border border-silver/30 hover:border-silver/60 shadow-sm hover:shadow transition-all">about</a>
+                    <!-- <a href="#" class="font-dmsans text-xs sm:text-sm text-dark-gray/60 hover:text-dark-gray px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/70 border border-silver/30 hover:border-silver/60 shadow-sm hover:shadow transition-all">theatre</a> -->
+                    <a href="#writing" class="font-dmsans text-xs sm:text-sm text-dark-gray/60 hover:text-dark-gray px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/70 border border-silver/30 hover:border-silver/60 shadow-sm hover:shadow transition-all">writing</a>
+                </nav>
+                <p class="font-dmsans text-silver text-xs sm:text-sm mt-3 sm:mt-4 fade-in fade-in-delay-2">
+                    I hope you enjoy your stay~
+                </p>
+            </div>
+            <!-- Character illustration -->
+            <div class="md:w-1/2 md:shrink-0 md:h-full md:flex md:items-end fade-in fade-in-delay-2">
+                <img
+                    src="/img/image copy.png"
+                    alt="Character illustration"
+                    class="w-[280px] sm:w-[360px] md:h-[85vh] md:w-auto md:max-w-none object-contain select-none pointer-events-none"
+                />
+            </div>
         </div>
-        <div class="flex justify-center ml-auto pl-8 ml-8 flex-shrink basis-1/2">
-            <img src="/img/Feyr-JTUYAEBTrW.jpeg" alt="Stylistic email" class="hidden w-2/3 h-2/3 object-cover sm:block">
+
+        <!-- Scroll indicator -->
+        <a href="#writing" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-silver/40 hover:text-dark-gray transition-colors animate-bounce-slow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+        </a>
+    </section>
+
+    <!-- Blog List Section -->
+    <section id="writing" class="bg-[#E9EEE8] text-dark-gray py-12 sm:py-16 px-5 sm:px-8 md:px-12">
+        <div class="w-full max-w-[1100px] mx-auto">
+            <h2 class="font-geistmono text-sm sm:text-base text-dark-gray/50 uppercase tracking-widest pb-8">Writings</h2>
+            <!-- Table header — hidden on mobile, shown as columns on sm+ -->
+            <div class="hidden sm:flex items-center border-b border-dark-gray/15 pb-3 mb-1">
+                <span class="font-geistmono text-xs text-dark-gray/40 w-28 md:w-32 shrink-0">Released</span>
+                <span class="font-geistmono text-xs text-dark-gray/40">Name</span>
+            </div>
+
+            <!-- Blog rows -->
+            {%- for post in collections.post reversed -%}
+            <a href="{{ post.url }}" class="group flex flex-col sm:flex-row sm:items-baseline py-4 px-3 border-b border-dark-gray/10 rounded-lg hover:bg-dark-gray/[0.04] transition-all">
+                <time class="font-geistmono text-xs sm:text-sm text-dark-gray/50 sm:w-28 md:w-32 shrink-0">{{ post.date | postDate }}</time>
+                <span class="font-dmserif text-lg sm:text-xl text-dark-gray group-hover:text-red-accent transition-colors mt-0.5 sm:mt-0">
+                    {{ post.data.title }}
+                </span>
+            </a>
+            {%- endfor -%}
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#E9EEE8] text-dark-gray/40 border-t border-dark-gray/10 py-8 px-5 sm:px-8 md:px-12">
+        <div class="w-full max-w-[1100px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="#" class="font-geistmono text-xs hover:text-dark-gray transition-colors">Back to top</a>
+            <div class="flex gap-5">
+                <a href="https://github.com" class="font-geistmono text-xs hover:text-dark-gray transition-colors">GitHub</a>
+                <a href="https://twitter.com" class="font-geistmono text-xs hover:text-dark-gray transition-colors">Twitter</a>
+                <a href="mailto:hello@example.com" class="font-geistmono text-xs hover:text-dark-gray transition-colors">Email</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/name-toggle.js"></script>
 </body>
 </html>

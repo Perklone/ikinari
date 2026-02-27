@@ -6,12 +6,48 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Paper grain texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.25;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+}
+
+/* Page animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+    animation: fadeIn 0.8s ease-out both;
+}
+.fade-in-delay-1 { animation-delay: 0.15s; }
+.fade-in-delay-2 { animation-delay: 0.3s; }
+.fade-in-delay-3 { animation-delay: 0.45s; }
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+}
+.animate-bounce-slow {
+    animation: bounce-slow 2.5s ease-in-out infinite;
+}
+
 .content-area a {
-    @apply underline-offset-1 text-orange-400	italic;
+    @apply underline underline-offset-2 text-red-accent hover:text-dark-gray transition-colors;
 }
 
 .content-area h2 {
-    @apply flex text-3xl font-dmserif;
+    @apply text-2xl sm:text-3xl font-dmserif text-dark-gray;
+}
+
+.content-area h3 {
+    @apply text-xl sm:text-2xl font-dmserif text-dark-gray;
 }
 
 .content-area img {
@@ -19,12 +55,105 @@
 }
 
 .content-area ul {
-    @apply list-disc
+    @apply list-disc pl-5;
 }
 
-.content-area pre {
-    @apply bg-slate-900 p-2 md:p-4 rounded-lg overflow-x-auto text-gray-100
+.content-area ol {
+    @apply list-decimal pl-5;
 }
-.content-area code {
-    @apply font-geistmono text-xs sm:text-sm md:text-lg whitespace-pre 
+
+/* Callouts / asides (Notion-style) */
+.content-area aside {
+    @apply bg-dark-gray/[0.05] border-l-4 border-dark-gray/20 rounded-r-lg px-5 py-4 text-sm sm:text-base text-dark-gray/70;
+}
+
+/* Blockquotes */
+.content-area blockquote {
+    @apply bg-dark-gray/[0.05] border-l-4 border-dark-gray/20 rounded-r-lg px-5 py-4 text-sm sm:text-base text-dark-gray/70 italic;
+}
+
+/* Tables */
+.content-area .table-wrapper {
+    @apply overflow-x-auto -mx-5 px-5 sm:-mx-8 sm:px-8;
+}
+
+.content-area table {
+    @apply w-full text-sm sm:text-base border-collapse min-w-[480px];
+}
+
+.content-area thead th {
+    @apply text-left font-dmsans font-semibold text-dark-gray py-2 px-3 border-b-2 border-dark-gray/20 bg-dark-gray/[0.04];
+}
+
+.content-area tbody td {
+    @apply py-2 px-3 border-b border-dark-gray/10 align-top;
+}
+
+.content-area tbody tr:hover {
+    @apply bg-dark-gray/[0.03];
+}
+
+/* Code blocks */
+.content-area pre {
+    @apply bg-[#1e1e2e] p-4 md:p-5 rounded-lg overflow-x-auto text-sm sm:text-base leading-relaxed;
+}
+
+.content-area pre code {
+    @apply font-geistmono text-xs sm:text-sm whitespace-pre text-gray-100;
+}
+
+/* Inline code */
+.content-area :not(pre) > code {
+    @apply font-geistmono text-xs sm:text-sm bg-dark-gray/[0.07] text-dark-gray px-1.5 py-0.5 rounded;
+}
+
+/* Prism.js syntax highlighting — warm dark theme */
+.content-area pre .token.comment,
+.content-area pre .token.prolog,
+.content-area pre .token.doctype,
+.content-area pre .token.cdata {
+    color: #6c7086;
+    font-style: italic;
+}
+
+.content-area pre .token.keyword,
+.content-area pre .token.tag,
+.content-area pre .token.boolean,
+.content-area pre .token.constant {
+    color: #cba6f7;
+}
+
+.content-area pre .token.function,
+.content-area pre .token.class-name {
+    color: #89b4fa;
+}
+
+.content-area pre .token.string,
+.content-area pre .token.attr-value {
+    color: #a6e3a1;
+}
+
+.content-area pre .token.number {
+    color: #fab387;
+}
+
+.content-area pre .token.operator,
+.content-area pre .token.punctuation {
+    color: #9399b2;
+}
+
+.content-area pre .token.property,
+.content-area pre .token.attr-name {
+    color: #f9e2af;
+}
+
+.content-area pre .token.symbol,
+.content-area pre .token.variable {
+    color: #f38ba8;
+}
+
+.content-area pre .token.selector,
+.content-area pre .token.important,
+.content-area pre .token.atrule {
+    color: #f5c2e7;
 }
