@@ -6,16 +6,19 @@
     <link href="/css/style.css" rel="stylesheet">
     <title>{{ title }} — Perklone</title>
 </head>
-<body class="bg-[#f3f1ec] text-dark-gray min-h-screen">
+<body class="bg-[#f3f1ec] text-dark-gray min-h-screen blog-page">
+
+    <!-- Accent bar -->
+    <div class="h-1 bg-red-accent w-full"></div>
 
     <!-- Top nav -->
-    <header class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-8 sm:pt-12 flex items-center justify-between">
+    <header class="w-full max-w-[680px] mx-auto px-3 sm:px-5 pt-8 sm:pt-12 flex items-center justify-between">
         <a href="/" class="font-dmserif text-lg text-dark-gray hover:text-red-accent transition-colors">Perklone</a>
         <a href="/#writing" class="font-geistmono text-xs text-dark-gray/40 hover:text-dark-gray transition-colors">all writings</a>
     </header>
 
     <!-- Article -->
-    <article class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-16 sm:pb-24">
+    <article class="w-full max-w-[680px] mx-auto px-3 sm:px-5 pt-12 sm:pt-16 pb-16 sm:pb-24">
         <!-- Meta -->
         <time class="font-geistmono text-xs sm:text-sm text-dark-gray/40 block mb-4">{{ date | postDate }}</time>
 
@@ -23,15 +26,20 @@
         <h1 class="font-dmserif text-3xl sm:text-4xl md:text-5xl leading-tight text-dark-gray mb-8 sm:mb-12">{{ title }}</h1>
 
         <!-- Content -->
-        <div class="content-area font-dmsans text-base sm:text-lg leading-relaxed sm:leading-relaxed text-dark-gray/80 flex flex-col gap-y-5 sm:gap-y-6">
+        <div class="content-area font-dmsans text-[17px] sm:text-[19px] leading-relaxed sm:leading-relaxed text-dark-gray/80 flex flex-col gap-y-5 sm:gap-y-6">
             {{ content | safe }}
         </div>
     </article>
 
     <!-- Footer nav -->
-    <footer class="w-full max-w-[680px] mx-auto px-5 sm:px-8 pb-12 sm:pb-16 border-t border-dark-gray/10 pt-6">
+    <footer class="w-full max-w-[680px] mx-auto px-3 sm:px-5 pb-12 sm:pb-16 border-t border-dark-gray/10 pt-6">
         <a href="/#writing" class="font-geistmono text-xs text-dark-gray/40 hover:text-dark-gray transition-colors">&larr; Back to writings</a>
     </footer>
+
+    <!-- Mascot -->
+    <div class="fixed bottom-0 right-4 sm:right-8 pointer-events-none z-[45] opacity-[0.4]">
+        <img src="/img/image copy.png" alt="" class="w-[120px] sm:w-[160px] object-contain select-none" />
+    </div>
 
 </body>
 </html>
