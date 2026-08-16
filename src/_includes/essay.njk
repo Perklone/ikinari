@@ -1,0 +1,28 @@
+---
+layout: base.njk
+section: essays
+---
+<article class="article">
+
+  <header class="essay-head">
+    <h1>{{ title }}</h1>
+    <div class="essay-meta">
+      {{ page.date | postDate }} · {{ content | readingTime }} MIN
+    </div>
+  </header>
+
+  <div class="hairline"></div>
+
+  {{ content | safe }}
+
+  {% if pull %}<blockquote class="pull">“{{ pull }}”</blockquote>{% endif %}
+
+  {% if topics %}
+    <div class="chips">
+      {% for topic in topics %}<span class="chip">{{ topic }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  <a class="button" href="/">ALL ESSAYS</a>
+
+</article>

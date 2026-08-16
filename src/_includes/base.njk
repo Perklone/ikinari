@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if title %}{{ title }} — {% endif %}Rizky Maulana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="split">
+
+    <div class="pane">
+      <header class="masthead">
+        <span class="sig">Rizky Maulana</span>
+        <img src="/img/bust.png" alt="" width="130" height="200">
+      </header>
+
+      <nav class="tabs">
+        <a class="tab{% if section == 'essays' %} is-active{% endif %}" href="/">
+          <i></i><span>Essays</span>
+        </a>
+        <a class="tab{% if section == 'experience' %} is-active{% endif %}" href="/experience/">
+          <i></i><span>Experience</span>
+        </a>
+        <a class="tab{% if section == 'about' %} is-active{% endif %}" href="/about/">
+          <i></i><span>About</span>
+        </a>
+      </nav>
+
+      {{ content | safe }}
+    </div>
+
+    {#- The seam is the control. No label, so nothing reflows when it toggles. -#}
+    <button class="seam" type="button" aria-label="Toggle reading width" aria-pressed="false"></button>
+
+    <aside class="rail">
+      <img src="/img/rail.png" alt="Commissioned illustration of Fujimasa March">
+      <div class="rail-foot">
+        <div class="rail-links">
+          <a href="mailto:mrizky9601@gmail.com">EMAIL</a>
+          <a href="https://github.com/Perklone">GITHUB</a>
+          <a href="#">LINKEDIN</a>
+        </div>
+        <span class="sig">Rizky Maulana</span>
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="/js/view-toggle.js"></script>
+  <script src="/js/code-copy.js"></script>
+</body>
+</html>
