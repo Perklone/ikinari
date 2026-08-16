@@ -56,10 +56,6 @@ module.exports = {
         kicker: ['11px', { letterSpacing: '0.14em' }],                      // mono
         label: ['11px', { letterSpacing: '0.18em' }],
       },
-      maxWidth: {
-        measure: '44ch',       // split view
-        'measure-wide': '62ch', // full width
-      },
       gridTemplateColumns: {
         // Pane / rail. 62/38 is the widest split where the dotted leader still
         // has room to read as a rule, and the narrowest where the figure keeps
