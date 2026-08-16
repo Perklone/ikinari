@@ -49,6 +49,10 @@ module.exports = function(eleventyConfig) {
 
     eleventyConfig.addFilter("year", (value) => new Date(value).getUTCFullYear());
 
+    // Machine-readable dates for OG tags, the feed and the sitemap.
+    eleventyConfig.addFilter("isoDate", (value) => new Date(value).toISOString());
+    eleventyConfig.addFilter("rfc822", (value) => new Date(value).toUTCString());
+
     // Self-clearing: true for NEW_FOR_DAYS after publication, then false on
     // the next build. Never hand-set, so it cannot be left behind.
     eleventyConfig.addFilter("isNew", (value) => {
@@ -56,11 +60,20 @@ module.exports = function(eleventyConfig) {
         return age >= 0 && age < NEW_FOR_DAYS * 86400000;
     });
 
+    // Returns the essay for a slug, or null. Experience links an achievement
+    // only when the writing actually exists — the page never promises a piece
+    // that hasn't been published.
+    eleventyConfig.addFilter("essayBySlug", (collection, slug) => {
+        if (!slug || !collection) return null;
+        return collection.find((post) => post.fileSlug === slug) || null;
+    });
+
     eleventyConfig.addCollection("essay", (api) =>
         api.getFilteredByTag("essay").sort((a, b) => b.date - a.date)
     );
     eleventyConfig.addPassthroughCopy("src/img");
     eleventyConfig.addPassthroughCopy("src/js");
+    eleventyConfig.addPassthroughCopy("src/files");
 
     // Tailwind inlines @fontsource's @font-face rules but leaves their
     // url(./files/…) references dangling. Copy the two weights we load to

@@ -3,10 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% if title %}{{ title }} — {% endif %}Rizky Maulana</title>
+  {%- set pageTitle = title + " — " + site.name if title else site.title %}
+  {%- set pageDesc = description if description else site.description %}
+  {%- set pageUrl = site.url + page.url %}
+  <title>{{ pageTitle }}</title>
+  <meta name="description" content="{{ pageDesc }}">
+  <link rel="canonical" href="{{ pageUrl }}">
+
+  {#- Shared everywhere a link is pasted. Without these, every share renders
+      as a bare URL with no title card. -#}
+  <meta property="og:type" content="{{ 'article' if layout == 'essay.njk' else 'website' }}">
+  <meta property="og:site_name" content="{{ site.name }}">
+  <meta property="og:locale" content="{{ site.locale }}">
+  <meta property="og:title" content="{{ title if title else site.title }}">
+  <meta property="og:description" content="{{ pageDesc }}">
+  <meta property="og:url" content="{{ pageUrl }}">
+  <meta property="og:image" content="{{ site.url }}/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  {%- if layout == 'essay.njk' %}
+  <meta property="article:published_time" content="{{ page.date | isoDate }}">
+  {%- endif %}
+
+  <link rel="icon" href="/img/icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/img/icon.png">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="/feed.xml">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="/css/style.css" rel="stylesheet">
+  {#- The rail art is 428KB. A fresh document must fetch and decode it before
+      it can paint the rail, so without this the illustration pops in a frame
+      or two after the rest of the page on every navigation. -#}
+  <link rel="preload" as="image" href="/img/rail-2.png">
+  <link rel="preload" as="image" href="/img/bust.png">
+  {#- Blocking, and deliberately in <head>: the persisted width has to be on
+      <html> BEFORE first paint. Applied from view-toggle.js at the end of
+      <body> it lands a frame late, so every navigation painted split view
+      first and then snapped. Key must match KEY in view-toggle.js. -#}
+  <script>
+    (function () {
+      var v = "split";
+      try { if (localStorage.getItem("ikinari:view") === "full") v = "full"; } catch (e) {}
+      document.documentElement.setAttribute("data-view", v);
+      // Gates the seam toggle: without JS it would render as a real button
+      // that does nothing. Same reasoning as building copy buttons in JS.
+      document.documentElement.classList.add("js");
+    })();
+  </script>
 </head>
 <body>
   <div class="split">
@@ -17,39 +62,63 @@
         <img src="/img/bust.png" alt="" width="130" height="200">
       </header>
 
-      <nav class="tabs">
-        <a class="tab{% if section == 'essays' %} is-active{% endif %}" href="/">
+      {#- aria-current is the semantic half of the vermilion rule. Without it
+          the active tab is marked by a CSS class alone, which conveys nothing
+          to assistive tech — the visual state had no counterpart. -#}
+      <nav class="tabs" aria-label="Sections">
+        <a class="tab{% if section == 'essays' %} is-active{% endif %}" href="/"
+           {% if section == 'essays' %}aria-current="page"{% endif %}>
           <i></i><span>Essays</span>
         </a>
-        <a class="tab{% if section == 'experience' %} is-active{% endif %}" href="/experience/">
+        <a class="tab{% if section == 'experience' %} is-active{% endif %}" href="/experience/"
+           {% if section == 'experience' %}aria-current="page"{% endif %}>
           <i></i><span>Experience</span>
         </a>
-        <a class="tab{% if section == 'about' %} is-active{% endif %}" href="/about/">
+        <a class="tab{% if section == 'about' %} is-active{% endif %}" href="/about/"
+           {% if section == 'about' %}aria-current="page"{% endif %}>
           <i></i><span>About</span>
         </a>
       </nav>
 
-      {{ content | safe }}
+      {#- The router swaps this element and nothing else. The rail, the seam
+          and the masthead are never touched, so they cannot flicker. -#}
+      <main class="pane-content">
+        {{ content | safe }}
+      </main>
     </div>
 
-    {#- The seam is the control. No label, so nothing reflows when it toggles. -#}
-    <button class="seam" type="button" aria-label="Toggle reading width" aria-pressed="false"></button>
+    {#- A drawer pull clipped to the rail's edge. The chevron always points
+        the way the rail is about to move. -#}
+    <button class="seam" type="button" title="Toggle reading width  (\)"
+            aria-label="Toggle reading width" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 6l6 6-6 6"/>
+      </svg>
+    </button>
 
     <aside class="rail">
-      <img src="/img/rail.png" alt="Commissioned illustration of Fujimasa March">
-      <div class="rail-foot">
-        <div class="rail-links">
-          <a href="mailto:mrizky9601@gmail.com">EMAIL</a>
-          <a href="https://github.com/Perklone">GITHUB</a>
-          <a href="#">LINKEDIN</a>
+      {#- The inner keeps its own width while the column closes, so she slides
+          out of frame at full proportions instead of being squashed. -#}
+      <div class="rail-inner">
+        <img src="/img/rail-2.png" alt="Commissioned illustration of Fujimasa March">
+        <div class="rail-foot">
+          {#- From _data/site.json so there is one place to change them. -#}
+          <div class="rail-links">
+            <a href="mailto:{{ site.email }}">EMAIL</a>
+            <a href="{{ site.github }}" rel="me">GITHUB</a>
+            <a href="{{ site.linkedin }}" rel="me">LINKEDIN</a>
+          </div>
+          <span class="sig">Rizky Maulana</span>
         </div>
-        <span class="sig">Rizky Maulana</span>
       </div>
     </aside>
 
   </div>
 
+  <script src="/js/router.js"></script>
   <script src="/js/view-toggle.js"></script>
   <script src="/js/code-copy.js"></script>
+
 </body>
 </html>

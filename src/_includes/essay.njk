@@ -6,6 +6,9 @@ section: essays
 
   <header class="essay-head">
     <h1>{{ title }}</h1>
+    {#- No topics here. By this point you have already chosen to read it, and
+        the tag is usually in the title anyway — "Ruby 3.3 and YJIT" tagged
+        Ruby. Topics do their work on the index, at the moment of choosing. -#}
     <div class="essay-meta">
       {{ page.date | postDate }} · {{ content | readingTime }} MIN
     </div>
@@ -17,12 +20,12 @@ section: essays
 
   {% if pull %}<blockquote class="pull">“{{ pull }}”</blockquote>{% endif %}
 
-  {% if topics %}
-    <div class="chips">
-      {% for topic in topics %}<span class="chip">{{ topic }}</span>{% endfor %}
-    </div>
-  {% endif %}
-
-  <a class="button" href="/">ALL ESSAYS</a>
+  <a class="back" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19 12H5m0 0l6-6m-6 6l6 6"/>
+    </svg>
+    All essays
+  </a>
 
 </article>

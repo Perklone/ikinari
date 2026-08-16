@@ -39,9 +39,7 @@ module.exports = {
         mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        site: ['44px', { lineHeight: '1.22', letterSpacing: '0.004em' }],   // 700
         essay: ['38px', { lineHeight: '1.30', letterSpacing: '0.004em' }],  // 700
-        sig: ['30px', { lineHeight: '1' }],                                 // serif italic
         pull: ['21px', { lineHeight: '1.60' }],                             // serif italic
         prose: ['20px', { lineHeight: '1.85' }],                            // serif
         row: ['19px', { lineHeight: '1.45', letterSpacing: '0.008em' }],    // 500
@@ -61,8 +59,13 @@ module.exports = {
         // has room to read as a rule, and the narrowest where the figure keeps
         // sage around her. Note this forces her to ~72% of rail height at
         // realistic viewport heights — at 90% she overflows a 38% rail.
+        // Both states must use the SAME unit, and the totals must match, or the
+        // columns cannot interpolate: `38fr -> 0px` is a type change, which
+        // makes the pane briefly shrink to 45% before jumping open. Keeping the
+        // total at 100fr also means the boundary sits at exactly the
+        // interpolated percentage, so the seam tab tracks it precisely.
         split: '62fr 38fr',
-        full: '1fr 0px',
+        full: '100fr 0fr',
       },
       borderRadius: {
         // Corners stay tighter than the drawing is soft.

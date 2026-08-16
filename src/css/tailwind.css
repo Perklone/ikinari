@@ -7,8 +7,50 @@
 @tailwind utilities;
 
 @layer base {
+    /* All layout tokens live on :root. They were on .pane, which meant the
+       seam — a SIBLING of .pane, not a descendant — could not see them:
+       custom properties inherit down the tree, never sideways. Any rule on
+       .seam using var(--measure) silently computed to `auto`. */
+    :root {
+        --gutter: 22px;
+        --measure: 100%;
+
+        /* The half/full toggle. Tuned by eye in the motion lab. */
+        --toggle-dur: 480ms;
+        --toggle-ease: ease;
+
+        /* Navigation: the page body does not fade at all. This is the slide
+           of the active-tab mark, the one bit of motion that carries meaning. */
+        --nav-mark: 320ms;
+    }
+
+    @media (min-width: 900px) {
+        :root {
+            --gutter: 64px;
+            --measure: 52.5rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :root {
+            --toggle-dur: 1ms;
+        }
+    }
+
     html {
         @apply bg-paper;
+    }
+
+    /* `sr-only` is Tailwind's own utility — used on each page's <h1>, which
+       carries the document outline for assistive tech and heading navigation
+       while the design keeps no visible page title. */
+
+    /* One rule covers every link and button on the site. Six of eight
+       interactive elements previously had no visible focus at all. */
+    :where(a, button):focus-visible {
+        outline: 2px solid theme(colors.ribbon);
+        outline-offset: 3px;
+        border-radius: 2px;
     }
 
     body {
@@ -27,17 +69,33 @@
 
 /* The gutter is owned by the pane and inherited by its children, so the
    masthead can bleed edge-to-edge while text still lines up with it. */
+/* The measure lives here, not on .article, so every page shares one
+   definition — index rows, essay prose, About and Experience alike. */
 .pane {
-    --gutter: 22px;
     @apply flex flex-col;
     padding-bottom: 72px;
     gap: 26px;
 }
 
+/* Every column of content obeys it — tabs included, or they stay pinned left
+   while the content centres in full width.
+   The cap adds the gutter back because max-width is border-box: without it a
+   container carrying both padding and the cap ends up 2×gutter narrower than
+   an essay paragraph, which caps its children instead. */
 .pane > .tabs,
-.pane > .article {
+.pane > .pane-content {
+    width: 100%;
+    max-width: calc(var(--measure) + 2 * var(--gutter));
     padding-inline: var(--gutter);
+    /* Always auto — never toggled. When the pane is narrower than the measure
+       `auto` already resolves to 0, so split view is unchanged; switching it
+       on toggle made the column SNAP from centred to left-aligned at frame 0
+       while the panel animated behind it. That was the full -> split jump. */
+    margin-inline: auto;
 }
+
+/* The masthead is the exception: it bleeds edge to edge and pads itself with
+   the same variable. */
 
 .rail,
 .seam {
@@ -48,35 +106,98 @@
     .split {
         @apply grid grid-cols-split;
         height: 100vh;
+        transition: grid-template-columns var(--toggle-dur) var(--toggle-ease);
     }
 
     .pane {
-        --gutter: 64px;
         @apply overflow-y-auto;
         padding: 62px 0 96px;
         gap: 40px;
     }
 
-    /* Column, not absolute layering — the footer is a real row, so the
-       signature and the figure cannot occupy the same space. */
+    /* `block` is load-bearing: the mobile default above is `display: none`,
+       so the rail must switch itself back on at this breakpoint. */
+    /* NOT given a view-transition-name. Lifting the rail into its own
+       transition group blanked the whole page for ~130ms on every navigation
+       — frame-by-frame comparison showed the gap appearing only when the rail
+       was on screen. It bought nothing anyway: the rail is identical on every
+       page, so cross-fading it with the rest is indistinguishable from
+       persisting it. */
     .rail {
-        @apply flex flex-col overflow-hidden bg-plate;
-        view-transition-name: rail;
+        @apply block overflow-hidden bg-plate;
+    }
+
+    /* Fixed to the rail's natural width so the column can close underneath it.
+       Without this the grid squashes her horizontally on the way out. */
+    .rail-inner {
+        @apply flex h-full flex-col;
+        width: 38vw;
     }
 
     /* She fills whatever height the footer leaves, bottom-right, uncropped.
        No magic percentage to go stale when the viewport changes. */
-    .rail > img {
+    .rail-inner > img {
         @apply block min-h-0 w-full;
         flex: 1 1 0;
         object-fit: contain;
-        object-position: 100% 100%;
-        padding: 44px 0 0 32px;
+        /* Centred horizontally, sitting on the bottom of the space the footer
+           leaves her. She is contained, not bleeding, so an edge anchor reads
+           as misalignment rather than intent. */
+        object-position: 50% 100%;
+        padding: 44px 32px 0;
     }
 
     .rail-foot {
         @apply flex flex-none items-end gap-6;
         padding: 18px 44px 30px;
+    }
+
+    /* The control is a drawer pull on the rail's edge, not a floating object —
+       nothing else in this layout floats. It travels with the boundary.
+       Gated on :root.js — the toggle is pure JS, so without it this would be a
+       real, focusable button that does nothing. */
+    :root.js .seam {
+        @apply absolute grid cursor-pointer place-items-center border-0 p-0 text-ink;
+        top: 50%;
+        left: 62%;
+        width: 19px;
+        height: 58px;
+        border-radius: 9px 0 0 9px;
+        background: theme(colors.plate);
+        transform: translate(-100%, -50%);
+        z-index: 2;
+        transition: left var(--toggle-dur) var(--toggle-ease),
+                    background-color 140ms ease;
+    }
+
+    .seam:hover {
+        background: #CBD9C8;
+    }
+
+    /* No bespoke focus ring here — the site-wide :focus-visible outline
+       covers it. Two treatments for the same state is one too many. */
+
+    .seam svg {
+        @apply block;
+        width: 12px;
+        height: 12px;
+        /* Deliberately faster than the panel: the control acknowledges the
+           click immediately and lets the layout catch up. */
+        transition: transform 260ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    /* Flush to the viewport edge — the rail is still there, collapsed to a
+       zero-width column pinned right, so that IS the boundary. Anchoring to
+       the content column instead would put a rail control somewhere the rail
+       is not, and move it with every window width.
+       Keeping it flush also keeps the notch meaningful: the flat side sits
+       against the edge the rail is hiding behind. */
+    :root[data-view="full"] .seam {
+        left: 100%;
+    }
+
+    :root[data-view="full"] .seam svg {
+        transform: rotate(180deg);
     }
 
     .rail-links {
@@ -96,67 +217,27 @@
         font-size: 26px;
     }
 
-    /* The control lives where the effect happens. No label, no reflow. */
-    .seam {
-        @apply absolute top-0 block h-full cursor-col-resize border-0 bg-transparent p-0;
-        left: 62%;
-        width: 13px;
-        transform: translateX(-50%);
-        z-index: 2;
-    }
-
-    .seam::after {
-        content: "";
-        @apply absolute rounded-full bg-edge;
-        left: 50%;
-        top: 50%;
-        width: 3px;
-        height: 40px;
-        transform: translate(-50%, -50%);
-        transition: background-color 140ms ease, height 140ms ease;
-    }
-
-    .seam:hover::after,
-    .seam:focus-visible::after {
-        @apply bg-ink;
-        height: 64px;
-    }
-
     :root[data-view="full"] .split {
         @apply grid-cols-full;
     }
-
-    :root[data-view="full"] .seam {
-        left: auto;
-        right: 0;
-        transform: none;
-    }
 }
 
-/* Sequential fade — out, then in. No movement, no scale. */
-::view-transition-old(root) {
-    animation: paneOut 180ms ease both;
-}
+/* ─────────────────────────────────────────────────────────
+ * NAVIGATION
+ *
+ * No cross-document view transitions. They were tried at
+ * length and every configuration produced an artifact on this
+ * layout — a blank, a washed-out double exposure, or a ghost
+ * — because a document swap tears down and re-composites the
+ * whole page. Navigation is handled by router.js instead,
+ * which replaces .pane-content and leaves the rail, the seam
+ * and the masthead untouched. Nothing is destroyed, so there
+ * is nothing to flicker.
+ *
+ * Without JS every link is still an ordinary page load.
+ * ───────────────────────────────────────────────────────── */
 
-::view-transition-new(root) {
-    animation: paneIn 220ms ease both;
-    animation-delay: 180ms;
-}
 
-/* The rail is its own group, so it resizes rather than re-rendering. */
-::view-transition-group(rail) {
-    animation-duration: 420ms;
-    animation-timing-function: cubic-bezier(.4, 0, .2, 1);
-}
-
-@keyframes paneOut { to { opacity: 0; } }
-@keyframes paneIn { from { opacity: 0; } }
-
-@media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(root),
-    ::view-transition-new(root),
-    ::view-transition-group(rail) { animation: none; }
-}
 
 /* ─────────────────────────────────────────────────────────
  * TABS
@@ -194,6 +275,285 @@
 .tab:hover > span { @apply text-ink; }
 
 /* ─────────────────────────────────────────────────────────
+ * INDEX LIST
+ * ───────────────────────────────────────────────────────── */
+
+.list {
+    @apply flex flex-col;
+}
+
+/* Two lines, not one. A single 19px line carrying a title and a year could
+   not hold its side of the page against a full-height illustration, and gave
+   a reader nothing to decide on. The second line carries the two facts that
+   actually drive the choice: what it is about, and how long it takes.
+   Negative margin lets the hover fill extend past the text without the rules
+   or the leader shifting when it appears. */
+.row {
+    @apply flex flex-col gap-1 rounded-md border-b border-rule no-underline;
+    padding: 14px 10px 15px;
+    margin-inline: -10px;
+    transition: background-color 120ms ease;
+}
+
+.row-main {
+    @apply flex items-baseline gap-3;
+}
+
+.row-meta {
+    @apply text-kicker font-medium text-meta uppercase;
+}
+
+.row:hover {
+    @apply bg-mist;
+}
+
+/* Hover brightens. The mock dimmed the row to 0.62, which reads as disabled. */
+.row:hover .row-title {
+    @apply text-ribbon;
+}
+
+.row-title {
+    @apply text-row font-medium text-ink;
+    flex: 0 1 auto;
+    min-width: 0;
+    transition: color 120ms ease;
+}
+
+.flag {
+    @apply flex-none font-serif italic text-flag text-ribbon;
+}
+
+/* A leader only reads as a leader when it has length. Once the title wraps —
+   which it does on a phone — it collapses to a ~20px dash stranded beside the
+   year and becomes a stray mark, so it leaves below the breakpoint. */
+.leader {
+    display: none;
+}
+
+@media (min-width: 900px) {
+    .leader {
+        @apply flex-1 border-b border-dotted border-edge;
+        display: block;
+        min-width: 18px;
+        height: 0;
+        transform: translateY(-5px);
+    }
+}
+
+.row-main .year {
+    margin-left: auto;
+}
+
+@media (min-width: 900px) {
+    .row-main .year { margin-left: 0; }
+}
+
+.year {
+    @apply flex-none text-year text-meta;
+}
+
+.empty {
+    @apply font-serif text-note text-meta;
+    padding: 28px 0;
+}
+
+.notfound {
+    @apply flex flex-col items-start gap-5;
+}
+
+.notfound h1 {
+    @apply text-essay font-bold text-ink;
+}
+
+.notfound p {
+    @apply font-serif text-prose text-ink-soft;
+}
+
+/* ─────────────────────────────────────────────────────────
+ * EXPERIENCE
+ * ───────────────────────────────────────────────────────── */
+
+/* A spine with a marker per company. No duration bars: a bar can be true to a
+   time axis OR aligned to the role it sits beside, never both — how long a job
+   lasted has nothing to do with how much was written about it, so the two drift
+   apart as content is edited. The dates are on every row anyway. This version
+   is pure CSS and cannot fall out of sync with the content at any length.
+
+   A promotion is another entry in the company's `roles` array; the org name,
+   blurb and marker are not repeated. */
+
+.timeline {
+    @apply relative flex flex-col;
+    padding-left: 34px;
+    gap: 34px;
+}
+
+.timeline::before {
+    content: "";
+    @apply absolute bg-rule;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+}
+
+.org {
+    @apply relative;
+}
+
+/* The marker. Current role is ribbon — the one place the accent appears here,
+   same "this one is live" job it does on the (new) flag. */
+.org::before {
+    content: "";
+    @apply absolute rounded-full bg-edge;
+    left: -32px;
+    top: 9px;
+    width: 9px;
+    height: 9px;
+    box-shadow: 0 0 0 3px theme(colors.paper);
+}
+
+.org:first-child::before {
+    @apply bg-ribbon;
+    width: 11px;
+    height: 11px;
+    left: -33px;
+}
+
+.org-name { @apply text-row font-medium text-ink; }
+
+.org-note {
+    @apply font-serif text-note text-ink-soft;
+    margin-top: 6px;
+    text-wrap: pretty;
+}
+
+.stint { margin-top: 14px; }
+
+/* Only when a company has more than one role does the nesting become visible —
+   a single-role company reads exactly as before. */
+.has-many .stint {
+    @apply border-l border-rule;
+    padding-left: 18px;
+    margin-top: 18px;
+}
+
+.stint-head {
+    @apply flex items-baseline justify-between gap-4;
+}
+
+.stint-title { @apply text-kicker font-medium text-meta; }
+.stint-period { @apply whitespace-nowrap text-period text-meta; }
+
+.has-many .is-current .stint-title { @apply text-ink; }
+
+.stint-items {
+    @apply flex list-none flex-col gap-2;
+    margin: 12px 0 0;
+    padding: 0;
+}
+
+.stint-items > li {
+    @apply relative font-serif text-ink-soft;
+    font-size: 16px;
+    line-height: 1.7;
+    padding-left: 16px;
+    text-wrap: pretty;
+}
+
+.stint-items > li::before {
+    content: "";
+    @apply absolute rounded-full bg-edge;
+    left: 0;
+    top: 0.66em;
+    width: 5px;
+    height: 5px;
+}
+
+/* Its own line, not inline. Run into the end of the achievement, the essay
+   title read as a continuation of the sentence. */
+.role-essay {
+    @apply mt-1.5 flex w-max items-center gap-2 font-sans text-ink no-underline;
+    font-size: 13px;
+}
+
+.role-essay-tag {
+    @apply flex-none rounded-ctrl border border-edge text-meta;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    font-weight: 500;
+    padding: 1px 5px;
+}
+
+.role-essay > span:last-child {
+    text-decoration: underline;
+    text-decoration-color: theme(colors.edge);
+    text-underline-offset: 3px;
+}
+
+/* Vermilion stays rationed: accent on hover only. Eleven red badges down the
+   page would have spent the one colour the system reserves. */
+.role-essay:hover { @apply text-ribbon; }
+.role-essay:hover .role-essay-tag { @apply border-ribbon text-ribbon; }
+.role-essay:hover > span:last-child { text-decoration-color: theme(colors.ribbon); }
+
+.timeline + .button { margin-top: 38px; }
+
+/* Going back is navigation, not an action, so it is a link with a direction —
+   no border. The bordered .button is reserved for things that DO something. */
+.back {
+    @apply inline-flex items-center gap-2 self-start text-ctrl font-medium uppercase text-meta no-underline;
+}
+
+.back svg {
+    @apply block flex-none;
+    width: 13px;
+    height: 13px;
+    transition: transform 180ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.back:hover { @apply text-ink; }
+.back:hover svg { transform: translateX(-3px); }
+
+@media (max-width: 899px) {
+    .stint-head { @apply flex-col items-start gap-1; }
+}
+
+/* ─────────────────────────────────────────────────────────
+ * ABOUT
+ * ───────────────────────────────────────────────────────── */
+
+.about {
+    @apply flex flex-col gap-6;
+}
+
+.about-p {
+    @apply font-serif text-prose text-ink-soft;
+    text-wrap: pretty;
+}
+
+.facts {
+    @apply grid;
+    grid-template-columns: 96px 1fr;
+    gap: 12px 22px;
+}
+
+.facts dt {
+    @apply text-label text-meta;
+    padding-top: 5px;
+}
+
+.facts dd {
+    @apply text-ink-soft;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.facts a { @apply text-ink; text-underline-offset: 3px; }
+.facts a:hover { @apply text-ribbon; }
+
+/* ─────────────────────────────────────────────────────────
  * ESSAY
  * ───────────────────────────────────────────────────────── */
 
@@ -213,14 +573,17 @@
     padding-left: 16px;
 }
 
-.chips { @apply flex flex-wrap gap-2; }
-.chip {
-    @apply rounded-ctrl border border-edge text-chip text-ink-soft;
-    padding: 5px 12px;
-}
+/* .chip / .chips deleted. They were the only decorative rectangles on a site
+   built from rules, and they shared radius, border colour and text size with
+   .button — non-interactive elements wearing the interactive costume. Topics
+   now live on the essay meta line; skills use the definition list below. */
 
+/* inline-flex, not bare `self-start`: align-self only does anything inside a
+   flex parent. On a plain block the <a> stayed inline, its vertical padding
+   overflowed without pushing anything, and it collided with the content above.
+   Reserved for actions — downloading the résumé. Navigation uses .back. */
 .button {
-    @apply self-start rounded-ctrl border border-edge text-chip font-medium text-ink no-underline;
+    @apply inline-flex self-start items-center rounded-ctrl border border-edge text-chip font-medium text-ink no-underline;
     padding: 12px 24px;
 }
 
@@ -258,52 +621,30 @@
 }
 
 /* ─────────────────────────────────────────────────────────
- * ARTICLE MEASURE
+ * ARTICLE
  *
- * Prose obeys --measure. Code breaks out of it and spans the
- * full pane instead — at 44ch a block holds ~54 characters,
- * which most real lines exceed.
- *
- * The full-width toggle flips one attribute on :root; nothing
- * else in the layout moves.
+ * Prose and code share one column — no breakout — so the
+ * measure is set by what code needs to read rather than what
+ * prose would prefer. See --measure on .pane; on a phone it is
+ * 100% (the viewport IS the measure) and 84ch above 900px,
+ * which exceeds most panes, so the column usually just fills
+ * its pane and the cap only bites on very wide displays.
  * ───────────────────────────────────────────────────────── */
 
-/* On a phone the viewport IS the measure — capping prose at 44ch there just
-   leaves a ragged gap beside every full-width code block. The cap only earns
-   its keep once the pane is wider than a comfortable line. */
 .article {
-    --measure: 100%;
-    --measure-inline: 0;
     @apply flex flex-col items-start;
     gap: 26px;
 }
 
+/* .article itself is now the measured column, so children just fill it.
+   Capping them again here would apply the measure twice. */
 .article > * {
     width: 100%;
-    max-width: var(--measure);
-    margin-inline: var(--measure-inline);
 }
-
-/* No breakout. Prose and code share one edge-to-edge column, so the measure
-   is set by what code needs to read, not by what prose would prefer. */
 
 /* Intrinsically sized children must opt out of the 100% stretch. */
 .article > .button {
     width: auto;
-}
-
-/* One number for both layouts. On most screens 84ch exceeds the pane, so the
-   column simply fills it; the cap only engages on very wide displays. Full
-   width then keeps the same column and centres it, rather than stretching it
-   further. */
-@media (min-width: 900px) {
-    .article {
-        --measure: 84ch;
-    }
-
-    :root[data-view="full"] .article {
-        --measure-inline: auto;
-    }
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -368,6 +709,27 @@ pre[class*="language-"],
     border-radius: 0;
     margin: 0;
     padding: 18px 20px;
+}
+
+/* Code overflows by ~260px on a phone and macOS overlay scrollbars stay
+   invisible until you are already scrolling, so nothing signals there is more
+   to the right. Styling the scrollbar opts out of overlay mode and makes it
+   permanently visible — the affordance IS the scrollbar. */
+.code-block pre::-webkit-scrollbar {
+    height: 7px;
+}
+
+.code-block pre::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.code-block pre::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-edge;
+}
+
+.code-block pre {
+    scrollbar-width: thin;
+    scrollbar-color: theme(colors.edge) transparent;
 }
 
 .code-block pre code,
