@@ -54,4 +54,7 @@
   } else {
     init();
   }
+
+  // Router swaps bring in fresh code blocks that have no button yet.
+  window.addEventListener("ikinari:navigated", init);
 })();

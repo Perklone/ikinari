@@ -22,20 +22,17 @@
     return root.getAttribute("data-view") === "full" ? "full" : "split";
   }
 
+  // Motion is pure CSS — the grid transitions its own columns. A view
+  // transition here would cross-fade identical content, which is what made
+  // the old version blink. Reduced motion is handled by --toggle-dur.
   function toggle() {
-    var next = current() === "full" ? "split" : "full";
-    // Skip the animation entirely for readers who asked us to.
-    if (!document.startViewTransition ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      apply(next, true);
-      return;
-    }
-    document.startViewTransition(function () { apply(next, true); });
+    apply(current() === "full" ? "split" : "full", true);
   }
 
-  var stored;
-  try { stored = localStorage.getItem(KEY); } catch (e) {}
-  apply(stored === "full" ? "full" : "split", false);
+  // data-view is already set by the inline script in <head>, before first
+  // paint. Re-applying it here would be a frame late — all this needs to do
+  // is bring the button's pressed state in line with what is already applied.
+  apply(current(), false);
 
   document.addEventListener("click", function (e) {
     if (e.target.closest(".seam")) toggle();
