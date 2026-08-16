@@ -1,0 +1,24 @@
+---
+layout: base.njk
+section: essays
+permalink: /
+---
+<h1 class="sr-only">Essays</h1>
+<div class="list">
+  {%- for post in collections.essay -%}
+    <a class="row" href="{{ post.url }}">
+      <span class="row-main">
+        <span class="row-title">{{ post.data.title }}</span>
+        {%- if post.date | isNew %}<span class="flag">(new)</span>{% endif -%}
+        <span class="leader"></span>
+        <span class="year">{{ post.date | year }}</span>
+      </span>
+      <span class="row-meta">
+        {%- for topic in post.data.topics %}{{ topic }} · {% endfor -%}
+        {{ post.templateContent | readingTime }} MIN
+      </span>
+    </a>
+  {%- else -%}
+    <p class="empty">Nothing published yet.</p>
+  {%- endfor -%}
+</div>

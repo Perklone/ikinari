@@ -1,0 +1,46 @@
+---
+layout: base.njk
+section: experience
+description: StraitsX, Scala Center and VideoLAN — payment infrastructure, developer experience, and two Google Summer of Code projects.
+title: Experience
+---
+<h1 class="sr-only">Experience</h1>
+
+<div class="timeline">
+  {%- for job in experience.jobs %}
+    <article class="org{% if job.roles.length > 1 %} has-many{% endif %}">
+      <h2 class="org-name">{{ job.org }}</h2>
+      <p class="org-note">{{ job.note }}</p>
+
+      {%- for role in job.roles %}
+        <div class="stint{% if role.current %} is-current{% endif %}">
+          <div class="stint-head">
+            <p class="stint-title">{{ role.title }}</p>
+            <p class="stint-period">{{ role.period }}</p>
+          </div>
+
+          {%- if role.items.length %}
+            <ul class="stint-items">
+              {%- for item in role.items %}
+                {%- set essay = collections.essay | essayBySlug(item.essay) %}
+                <li>
+                  {{ item.text }}
+                  {%- if essay %}
+                    <a class="role-essay" href="{{ essay.url }}">
+                      <span class="role-essay-tag">ESSAY</span><span>{{ essay.data.title }}</span>
+                    </a>
+                  {%- endif %}
+                </li>
+              {%- endfor %}
+            </ul>
+          {%- endif %}
+        </div>
+      {%- endfor %}
+    </article>
+  {%- endfor %}
+</div>
+
+{#- No skills list. Half of it restated technologies already named inside an
+    achievement, and a list of bare nouns is the one thing on this page with no
+    evidence behind it. The resume does keyword breadth properly. -#}
+<a class="button" href="/files/rizky-maulana-resume.pdf">FULL RÉSUMÉ (PDF)</a>

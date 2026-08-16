@@ -1,0 +1,106 @@
+{
+  "_comment": "One object per COMPANY. A promotion or role change is another entry in that company's `roles` array — the org name, blurb and spine marker are not repeated. Skills are deliberately absent — half of them already appear inside an achievement, and the resume PDF covers keyword breadth better than a list of bare nouns can. `essay` is a slug in src/posts/essays/; if no post matches the line renders as plain text, so this file can never link to writing that does not exist.",
+  "jobs": [
+    {
+      "org": "StraitsX",
+      "note": "Regulated stablecoin payment infrastructure (XSGD, XUSD, XIDR) across Singapore and Southeast Asia.",
+      "roles": [
+        {
+          "title": "DEVEX / BACKEND ENGINEER",
+          "period": "SEP 2023 — NOW",
+          "current": true,
+          "items": [
+            {
+              "text": "CI runtime down 61% across three Rails codebases, adopted as an org-wide standard",
+              "essay": "cutting-ci-runtime"
+            },
+            {
+              "text": "Ruby 3.1 to 3.3 with YJIT in Kubernetes — p90 latency down 23%, CPU efficiency up 15%",
+              "essay": "ruby-yjit"
+            },
+            {
+              "text": "AWS ElastiCache migration for a payment service, Singapore to Jakarta",
+              "essay": "elasticache"
+            },
+            {
+              "text": "Payment routing inefficiency worth about $33K a year",
+              "essay": "routing"
+            },
+            {
+              "text": "Go microservice for payment processing alongside the Ruby fleet",
+              "essay": "go-ruby"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "org": "Scala Center",
+      "note": "The official Scala toolchain and open-source ecosystem.",
+      "roles": [
+        {
+          "title": "SOFTWARE ENGINEER · GOOGLE SUMMER OF CODE",
+          "period": "MAY — AUG 2024",
+          "items": [
+            {
+              "text": "Source generation for Protobuf and Smithy schemas in Scala-CLI, using Scala and Bloop",
+              "essay": "scala-cli"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "org": "VideoLAN",
+      "note": "VLC for iOS — an open-source player with billions of downloads.",
+      "roles": [
+        {
+          "title": "IOS ENGINEER · GOOGLE SUMMER OF CODE",
+          "period": "MAY — AUG 2023",
+          "items": [
+            {
+              "text": "Favourites for SMB and UPnP media, in Objective-C and Swift",
+              "essay": "vlc"
+            },
+            {
+              "text": "Playback restoration fix through VLCKit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "org": "Apple Developer Academy @ BINUS",
+      "note": "Apple's ten-month developer programme in Indonesia.",
+      "roles": [
+        {
+          "title": "IOS ENGINEER · TECH LEAD",
+          "period": "MAY — DEC 2022",
+          "items": [
+            {
+              "text": "Led three iOS engineers on a social RSVP app built with UIKit"
+            },
+            {
+              "text": "iPad-first app teaching arithmetic through interactive storytelling"
+            },
+            {
+              "text": "One of 350 global winners of the Apple WWDC 2022 Swift Student Challenge",
+              "essay": "wwdc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "org": "Bina Nusantara University",
+      "note": "Data structures, algorithms, software engineering.",
+      "roles": [
+        {
+          "title": "B.ENG INFORMATICS · CGPA 3.52",
+          "period": "2019 — 2023",
+          "items": []
+        }
+      ]
+    }
+  ]
+}
