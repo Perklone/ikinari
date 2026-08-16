@@ -17,6 +17,216 @@
 }
 
 /* ─────────────────────────────────────────────────────────
+ * SPLIT — pane, seam, rail.
+ * Below 900px the rail is gone and the masthead stands in.
+ * ───────────────────────────────────────────────────────── */
+
+.split {
+    @apply relative min-h-screen;
+}
+
+/* The gutter is owned by the pane and inherited by its children, so the
+   masthead can bleed edge-to-edge while text still lines up with it. */
+.pane {
+    --gutter: 22px;
+    @apply flex flex-col;
+    padding-bottom: 72px;
+    gap: 26px;
+}
+
+.pane > .tabs,
+.pane > .article {
+    padding-inline: var(--gutter);
+}
+
+.rail,
+.seam {
+    display: none;
+}
+
+@media (min-width: 900px) {
+    .split {
+        @apply grid grid-cols-split;
+        height: 100vh;
+    }
+
+    .pane {
+        --gutter: 64px;
+        @apply overflow-y-auto;
+        padding: 62px 0 96px;
+        gap: 40px;
+    }
+
+    /* Column, not absolute layering — the footer is a real row, so the
+       signature and the figure cannot occupy the same space. */
+    .rail {
+        @apply flex flex-col overflow-hidden bg-plate;
+        view-transition-name: rail;
+    }
+
+    /* She fills whatever height the footer leaves, bottom-right, uncropped.
+       No magic percentage to go stale when the viewport changes. */
+    .rail > img {
+        @apply block min-h-0 w-full;
+        flex: 1 1 0;
+        object-fit: contain;
+        object-position: 100% 100%;
+        padding: 44px 0 0 32px;
+    }
+
+    .rail-foot {
+        @apply flex flex-none items-end gap-6;
+        padding: 18px 44px 30px;
+    }
+
+    .rail-links {
+        @apply flex gap-5;
+    }
+
+    .rail-links a {
+        @apply text-social font-medium text-ink no-underline;
+    }
+
+    .rail-links a:hover {
+        @apply text-ribbon;
+    }
+
+    .rail-foot .sig {
+        @apply ml-auto;
+        font-size: 26px;
+    }
+
+    /* The control lives where the effect happens. No label, no reflow. */
+    .seam {
+        @apply absolute top-0 block h-full cursor-col-resize border-0 bg-transparent p-0;
+        left: 62%;
+        width: 13px;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+
+    .seam::after {
+        content: "";
+        @apply absolute rounded-full bg-edge;
+        left: 50%;
+        top: 50%;
+        width: 3px;
+        height: 40px;
+        transform: translate(-50%, -50%);
+        transition: background-color 140ms ease, height 140ms ease;
+    }
+
+    .seam:hover::after,
+    .seam:focus-visible::after {
+        @apply bg-ink;
+        height: 64px;
+    }
+
+    :root[data-view="full"] .split {
+        @apply grid-cols-full;
+    }
+
+    :root[data-view="full"] .seam {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+}
+
+/* Sequential fade — out, then in. No movement, no scale. */
+::view-transition-old(root) {
+    animation: paneOut 180ms ease both;
+}
+
+::view-transition-new(root) {
+    animation: paneIn 220ms ease both;
+    animation-delay: 180ms;
+}
+
+/* The rail is its own group, so it resizes rather than re-rendering. */
+::view-transition-group(rail) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes paneOut { to { opacity: 0; } }
+@keyframes paneIn { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-group(rail) { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────
+ * TABS
+ * ───────────────────────────────────────────────────────── */
+
+/* The signature is a wordmark, not a flourish — Zen Kaku, not Newsreader. */
+.sig {
+    @apply font-sans font-bold text-ink;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: 0.004em;
+    white-space: nowrap;
+}
+
+.tabs {
+    @apply flex items-start gap-8;
+}
+
+.tab {
+    @apply flex flex-col gap-3 no-underline;
+    width: max-content;
+}
+
+.tab > i {
+    @apply block rounded-sm bg-transparent;
+    height: 2px;
+}
+
+.tab > span {
+    @apply text-row font-medium text-meta;
+}
+
+.tab.is-active > i { @apply bg-ribbon; }
+.tab.is-active > span { @apply text-ink; }
+.tab:hover > span { @apply text-ink; }
+
+/* ─────────────────────────────────────────────────────────
+ * ESSAY
+ * ───────────────────────────────────────────────────────── */
+
+.essay-head { @apply flex flex-col gap-3.5; }
+.essay-head h1 { @apply text-essay font-bold text-ink; }
+.essay-meta { @apply text-stamp font-medium text-meta; }
+.hairline { @apply bg-rule; height: 1px; }
+
+.article p { @apply font-serif text-prose text-ink-soft; text-wrap: pretty; }
+.article h2 { @apply text-row font-bold text-ink; margin-top: 12px; }
+.article ul { @apply font-serif text-prose text-ink-soft list-disc; padding-left: 1.2em; }
+.article a { @apply text-ink; text-underline-offset: 3px; }
+.article a:hover { @apply text-ribbon; }
+
+.pull {
+    @apply border-l-2 border-ribbon font-serif italic text-pull text-ink;
+    padding-left: 16px;
+}
+
+.chips { @apply flex flex-wrap gap-2; }
+.chip {
+    @apply rounded-ctrl border border-edge text-chip text-ink-soft;
+    padding: 5px 12px;
+}
+
+.button {
+    @apply self-start rounded-ctrl border border-edge text-chip font-medium text-ink no-underline;
+    padding: 12px 24px;
+}
+
+.button:hover { @apply bg-mist; }
+
+/* ─────────────────────────────────────────────────────────
  * MASTHEAD — below 900px only.
  *
  * The rail cannot survive a phone: at 38% it would be under
@@ -29,23 +239,18 @@
  * exported at ~2x (≈130x200) rather than the 3072px source.
  * ───────────────────────────────────────────────────────── */
 
+/* Flex row, not absolute positioning — an absolutely positioned bust cannot
+   push the name out of its way, so at narrow widths they collided. */
 .masthead {
-    @apply relative flex items-end overflow-hidden bg-plate;
+    @apply flex items-end justify-between gap-4 overflow-hidden bg-plate;
     height: 108px;
-    padding: 0 20px 18px;
-}
-
-.masthead .sig {
-    @apply font-serif italic text-ink;
-    font-size: 27px;
-    line-height: 1;
+    padding: 0 var(--gutter, 22px) 18px;
 }
 
 .masthead img {
-    @apply absolute block w-auto;
-    right: 20px;
-    bottom: 0;
+    @apply block w-auto flex-none;
     height: 100px;
+    margin-bottom: -18px; /* cancel the band's padding so she sits flush */
 }
 
 @media (min-width: 900px) {
@@ -63,8 +268,11 @@
  * else in the layout moves.
  * ───────────────────────────────────────────────────────── */
 
+/* On a phone the viewport IS the measure — capping prose at 44ch there just
+   leaves a ragged gap beside every full-width code block. The cap only earns
+   its keep once the pane is wider than a comfortable line. */
 .article {
-    --measure: 44ch;
+    --measure: 100%;
     --measure-inline: 0;
     @apply flex flex-col items-start;
     gap: 26px;
@@ -76,14 +284,26 @@
     margin-inline: var(--measure-inline);
 }
 
-.article > .code-block {
-    max-width: none;
-    margin-inline: 0;
+/* No breakout. Prose and code share one edge-to-edge column, so the measure
+   is set by what code needs to read, not by what prose would prefer. */
+
+/* Intrinsically sized children must opt out of the 100% stretch. */
+.article > .button {
+    width: auto;
 }
 
-:root[data-view="full"] .article {
-    --measure: 62ch;
-    --measure-inline: auto;
+/* One number for both layouts. On most screens 84ch exceeds the pane, so the
+   column simply fills it; the cap only engages on very wide displays. Full
+   width then keeps the same column and centres it, rather than stretching it
+   further. */
+@media (min-width: 900px) {
+    .article {
+        --measure: 84ch;
+    }
+
+    :root[data-view="full"] .article {
+        --measure-inline: auto;
+    }
 }
 
 /* ─────────────────────────────────────────────────────────
