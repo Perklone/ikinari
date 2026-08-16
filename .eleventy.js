@@ -20,8 +20,45 @@ function escapeHtml(s) {
         .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const NEW_FOR_DAYS = 60;
+const WORDS_PER_MINUTE = 200;
+
 module.exports = function(eleventyConfig) {
     eleventyConfig.addPlugin(syntaxHighlight);
+
+    // ── Derived essay metadata ────────────────────────────────
+    // Nothing below is declared in frontmatter, so nothing below can rot.
+    // UTC accessors throughout: a date-only frontmatter value parses as
+    // midnight UTC, and local getters would shift it a day west of Greenwich.
+
+    eleventyConfig.addFilter("readingTime", (content) => {
+        const words = String(content || "")
+            .replace(/<[^>]*>/g, " ")
+            .split(/\s+/)
+            .filter(Boolean).length;
+        return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
+    });
+
+    // 2026-03-02 -> "MAR 02, 2026"
+    eleventyConfig.addFilter("postDate", (value) => {
+        const d = new Date(value);
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        return `${MONTHS[d.getUTCMonth()]} ${day}, ${d.getUTCFullYear()}`;
+    });
+
+    eleventyConfig.addFilter("year", (value) => new Date(value).getUTCFullYear());
+
+    // Self-clearing: true for NEW_FOR_DAYS after publication, then false on
+    // the next build. Never hand-set, so it cannot be left behind.
+    eleventyConfig.addFilter("isNew", (value) => {
+        const age = Date.now() - new Date(value).getTime();
+        return age >= 0 && age < NEW_FOR_DAYS * 86400000;
+    });
+
+    eleventyConfig.addCollection("essay", (api) =>
+        api.getFilteredByTag("essay").sort((a, b) => b.date - a.date)
+    );
     eleventyConfig.addPassthroughCopy("src/img");
     eleventyConfig.addPassthroughCopy("src/js");
 
