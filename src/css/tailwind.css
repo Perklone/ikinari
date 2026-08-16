@@ -1,17 +1,231 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-@import '@fontsource/geist-mono';
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,400&display=swap');
+@import '@fontsource/geist-mono/latin-400.css';
+@import '@fontsource/geist-mono/latin-500.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        @apply bg-paper;
+    }
+
+    body {
+        @apply bg-paper text-ink-soft font-sans antialiased;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────
+ * MASTHEAD — below 900px only.
+ *
+ * The rail cannot survive a phone: at 38% it would be under
+ * 350px, too narrow for a figure. Instead the signature moves
+ * out of the rail (where it lives on desktop) into a sage band,
+ * with a bust-up beside it.
+ *
+ * Band is 108px; the bust is contained at 100px, not cropped.
+ * Asset must be cropped to its alpha bounds — ratio 0.649,
+ * exported at ~2x (≈130x200) rather than the 3072px source.
+ * ───────────────────────────────────────────────────────── */
+
+.masthead {
+    @apply relative flex items-end overflow-hidden bg-plate;
+    height: 108px;
+    padding: 0 20px 18px;
+}
+
+.masthead .sig {
+    @apply font-serif italic text-ink;
+    font-size: 27px;
+    line-height: 1;
+}
+
+.masthead img {
+    @apply absolute block w-auto;
+    right: 20px;
+    bottom: 0;
+    height: 100px;
+}
+
+@media (min-width: 900px) {
+    .masthead { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────
+ * ARTICLE MEASURE
+ *
+ * Prose obeys --measure. Code breaks out of it and spans the
+ * full pane instead — at 44ch a block holds ~54 characters,
+ * which most real lines exceed.
+ *
+ * The full-width toggle flips one attribute on :root; nothing
+ * else in the layout moves.
+ * ───────────────────────────────────────────────────────── */
+
+.article {
+    --measure: 44ch;
+    --measure-inline: 0;
+    @apply flex flex-col items-start;
+    gap: 26px;
+}
+
+.article > * {
+    width: 100%;
+    max-width: var(--measure);
+    margin-inline: var(--measure-inline);
+}
+
+.article > .code-block {
+    max-width: none;
+    margin-inline: 0;
+}
+
+:root[data-view="full"] .article {
+    --measure: 62ch;
+    --measure-inline: auto;
+}
+
+/* ─────────────────────────────────────────────────────────
+ * CODE — option A, light plate.
+ * Five tokens, two hues, everything else is weight.
+ * Every token clears 4.5:1 against plate-soft.
+ * ───────────────────────────────────────────────────────── */
+
+/* The figure owns the frame; the pre inside is a bare scroll region. */
+.code-block {
+    @apply bg-plate-soft border border-edge rounded-art overflow-hidden;
+    margin: 0;
+}
+
+.code-head {
+    @apply flex items-center gap-3 border-b border-edge;
+    padding: 9px 16px 9px 20px;
+}
+
+.code-lang {
+    @apply text-kicker text-meta uppercase;
+    font-weight: 500;
+}
+
+.code-file {
+    @apply font-mono text-ink;
+    font-size: 11.5px;
+}
+
+/* Pushed right by the copy button's auto margin; see code-copy.js. */
+.code-copy {
+    @apply ml-auto text-ctrl text-meta uppercase;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 140ms ease, color 140ms ease;
+}
+
+.code-block:hover .code-copy,
+.code-copy:focus-visible {
+    opacity: 1;
+}
+
+.code-copy:hover {
+    @apply text-ink bg-mist;
+}
+
+.code-copy[data-copied="true"] {
+    @apply text-code-str;
+    opacity: 1;
+}
+
+.code-block pre,
+pre[class*="language-"],
+.content-area pre {
+    @apply bg-transparent overflow-x-auto;
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    padding: 18px 20px;
+}
+
+.code-block pre code,
+pre[class*="language-"] code,
+.content-area pre code {
+    @apply font-mono text-ink bg-transparent p-0 border-0;
+    font-size: 13.5px;
+    line-height: 1.65;
+    white-space: pre;
+    tab-size: 2;
+}
+
+/* Inline code sits at 0.86em — monospace carries a larger x-height,
+   so matching the point size makes it read bigger than the serif around it. */
+:not(pre) > code {
+    @apply font-mono bg-plate-soft text-ink rounded-ctrl;
+    font-size: 0.86em;
+    padding: 2px 6px;
+    white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    @apply text-code-com italic;
+}
+
+.token.punctuation,
+.token.operator {
+    @apply text-ink-soft;
+}
+
+.token.keyword,
+.token.atrule,
+.token.boolean,
+.token.important,
+.token.selector,
+.token.deleted {
+    @apply text-code-key;
+}
+
+/* Values. `constant` is deliberately NOT here — Prism tags Ruby's ENV and
+   RSpec as constants, and those are identifiers, not values. */
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.number,
+.token.symbol,
+.token.inserted {
+    @apply text-code-str;
+}
+
+/* Identifiers separate from punctuation by weight, not colour.
+   Note: Prism's Ruby grammar leaves method calls untagged, so this layer
+   only shows up in languages that tag them (JS, Go, Python). */
+.token.function,
+.token.class-name,
+.token.constant,
+.token.property,
+.token.tag,
+.token.attr-name,
+.token.variable,
+.token.builtin {
+    @apply text-ink font-medium;
+}
+
+/* ─────────────────────────────────────────────────────────
+ * Legacy gsoc24 pages
+ * ───────────────────────────────────────────────────────── */
 
 .content-area a {
     @apply underline-offset-1 text-orange-400	italic;
 }
 
 .content-area h2 {
-    @apply flex text-3xl font-dmserif;
+    @apply flex text-3xl font-serif;
 }
 
 .content-area img {
@@ -20,11 +234,4 @@
 
 .content-area ul {
     @apply list-disc
-}
-
-.content-area pre {
-    @apply bg-slate-900 p-2 md:p-4 rounded-lg overflow-x-auto text-gray-100
-}
-.content-area code {
-    @apply font-geistmono text-xs sm:text-sm md:text-lg whitespace-pre 
 }
