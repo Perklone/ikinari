@@ -60,6 +60,38 @@
     body {
         @apply bg-paper text-ink-soft font-sans antialiased;
     }
+
+    /* Selection. The accent is rationed to once or twice a screen and always
+       means "now" — but a selection is transient and the reader causes it, so
+       spending vermilion here does not dilute that meaning the way another
+       decorative use would.
+       code-key rather than ribbon proper: it is the palette's own "ribbon
+       deepened", and paper on it clears AA at 6.25:1 where paper on #CB4838
+       is 4.46:1 — just under the bar every other colour in the config is
+       annotated as clearing. Swap this one value if the brighter red is
+       worth the ratio. */
+    ::selection {
+        background: theme(colors.code-key);
+        color: theme(colors.paper);
+    }
+
+    /* Code keeps its own colours. ::selection overrides the text colour of
+       everything beneath it, so a solid highlight flattens keyword, string
+       and comment into a single colour the moment anyone selects a snippet —
+       in the one place on the site where selecting text IS the point. A tint
+       leaves the highlighting legible and the contrast untouched.
+       The literal is ribbon at 20%; it cannot come from theme() because the
+       colour underneath has to show through.
+       Deliberately NOT wrapped in :where() — that would zero the specificity
+       and leave this winning only on source order, so a later reshuffle of
+       this file would silently flatten every code block again. */
+    pre::selection,
+    pre ::selection,
+    code::selection,
+    code ::selection {
+        background: rgb(203 72 56 / 20%);
+        color: inherit;
+    }
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -86,7 +118,7 @@
    The cap adds the gutter back because max-width is border-box: without it a
    container carrying both padding and the cap ends up 2×gutter narrower than
    an essay paragraph, which caps its children instead. */
-.pane > .tabs,
+.pane > .tabrow,
 .pane > .pane-content {
     width: 100%;
     max-width: calc(var(--measure) + 2 * var(--gutter));
@@ -151,8 +183,11 @@
         padding: 44px 32px 0;
     }
 
-    /* Stacked, right-aligned: a wordmark and a utility row sharing a baseline
-       read as a nav bar. Separated, they read as a signature. */
+    /* Right-aligned, and now a name alone. The links that used to stack above
+       it were what made this read as a nav bar; contact moved to the About
+       facts list so the rail ends on a signature and nothing else. The column
+       and its gap stay — they cost nothing at one child and are what a second
+       line would need. */
     .rail-foot {
         @apply flex flex-none flex-col items-end;
         gap: 9px;
@@ -207,27 +242,29 @@
         transform: rotate(180deg);
     }
 
-    /* Middot separators, matching the essay meta line and the index rows. */
-    .rail-links {
-        @apply flex items-center;
-        gap: 0;
+    /* Lives entirely inside the desktop block: the rail is the only place this
+       credit belongs, because the masthead below 900px shows a different
+       commission. Right-aligned to the same 44px edge as the signature, and
+       small enough to read as a caption rather than a second signature line. */
+    .rail-credit {
+        @apply flex-none text-right text-meta;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        padding: 12px 44px 0;
+        margin: 0;
     }
 
-    .rail-links a + a::before {
-        content: "·";
-        @apply text-meta;
-        margin: 0 9px;
+    .rail-credit a { @apply text-ink no-underline; }
+    .rail-credit a:hover { @apply text-ribbon; }
+
+    /* Kanji and kana pack more strokes into the same em than latin does, so at
+       a matched size they read a size smaller than the words beside them. A
+       point up, and the latin tracking backed off — 0.06em is spacing between
+       letters, and CJK glyphs are already spaced by their own square bodies. */
+    .rail-credit [lang="ja"] {
+        font-size: 12px;
+        letter-spacing: 0.02em;
     }
-
-    .rail-links a {
-        @apply text-social font-medium text-ink no-underline;
-    }
-
-    .rail-links a:hover {
-        @apply text-ribbon;
-    }
-
-
 
     .rail-foot .sig {
         font-size: 26px;
@@ -268,8 +305,46 @@
     white-space: nowrap;
 }
 
+/* This wrapper, not .tabs, is now the measured column above — the rule up there
+   selects direct children of .pane, so the nav inside here would otherwise stay
+   pinned left while the content centred in full width.
+   Bottom-aligned so the standing-in signature sits on the tab labels' baseline
+   rather than level with the 2px marks above them. */
+.tabrow {
+    @apply flex items-end;
+}
+
 .tabs {
     @apply flex items-start gap-8;
+}
+
+/* The rail's signature is the only place the name appears above 900px, and
+   collapsing the rail clips it away — a state that persists across visits, so
+   a returning reader can arrive with no name on screen at all. This restores
+   it, and only while the rail is gone.
+   Sized to the tab row (19px/500) rather than to .sig (24px/700): here the
+   name is a marker on a utility row, not the signature block that anchors the
+   rail, and at 24px bold it would outweigh the navigation beside it.
+   visibility rides along with opacity so the hidden copy leaves the
+   accessibility tree and cannot be found by search or a screen reader; the
+   0s delay is what lets it fade rather than vanish on the way out. */
+.tabsig { display: none; }
+
+@media (min-width: 900px) {
+    .tabsig {
+        @apply ml-auto block text-row font-medium text-ink;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--toggle-dur) var(--toggle-ease),
+                    visibility 0s linear var(--toggle-dur);
+    }
+
+    :root[data-view="full"] .tabsig {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity var(--toggle-dur) var(--toggle-ease),
+                    visibility 0s;
+    }
 }
 
 .tab {
@@ -321,9 +396,18 @@
 /* No measure of its own: capped at 62ch inside an 810px row, the dek stopped
    two-thirds across and its right edge aligned with nothing. The row is
    already inside --measure; a second cap just adds a second edge. */
+/* One line, in meta rather than ink-soft. Together these demote the dek from a
+   summary to a subtitle: the title leads, the dek hints, the meta classifies.
+   Two full-contrast lines made it the heaviest thing in the row.
+   nowrap + ellipsis rather than -webkit-line-clamp — for a single line the
+   clamp needs a -webkit-box display hack, and this needs no prefix.
+   text-wrap: pretty is gone with it; it balances the last line of a wrap, and
+   nothing wraps any more. */
 .row-dek {
-    @apply font-serif text-note text-ink-soft;
-    text-wrap: pretty;
+    @apply font-serif text-note text-meta;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .row-meta {
@@ -339,8 +423,12 @@
     @apply text-ribbon;
 }
 
+/* Bold, not medium. The dek below outweighed the title at 2.2× its vertical
+   mass, so the row's centre of gravity was the summary rather than the name of
+   the thing being chosen between. Weight fixes the rank without adding height,
+   which is what raising the size would have done. */
 .row-title {
-    @apply text-row font-medium text-ink;
+    @apply text-row font-bold text-ink;
     flex: 0 1 auto;
     min-width: 0;
     transition: color 120ms ease;
@@ -598,6 +686,39 @@
 
 .facts a { @apply text-ink; text-underline-offset: 3px; }
 .facts a:hover { @apply text-ribbon; }
+
+/* The page's entry point. No page here has a visible <h1> — the active tab is
+   the title — so About needed something that outranks body copy without
+   inventing a heading the other pages do not have.
+   28px is deliberately not a token: it appears once, and the scale's own rule
+   is that a size used once is a rename, not a token. */
+.about-lead {
+    @apply font-serif text-ink;
+    font-size: 28px;
+    line-height: 1.5;
+    text-wrap: pretty;
+}
+
+/* Sentence-length values, so the touchpoints read as the second half of the
+   introduction rather than as a spec sheet. That means the serif and a line
+   height that can carry a sentence — and more row gap, because 12px was tuned
+   for one-line values. REACH is still a list of links, so it keeps the sans. */
+.facts-prose { gap: 22px 22px; }
+.facts-prose dt { padding-top: 8px; }
+
+.facts-prose dd {
+    @apply font-serif;
+    font-size: 18px;
+    line-height: 1.75;
+    text-wrap: pretty;
+}
+
+.facts-prose dd.links {
+    @apply font-sans;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
 
 /* ─────────────────────────────────────────────────────────
  * ESSAY
