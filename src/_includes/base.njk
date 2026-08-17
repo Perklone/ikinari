@@ -59,6 +59,7 @@
     <div class="pane">
       <header class="masthead">
         <span class="sig">Rizky Maulana</span>
+        {% include "sound-toggle.njk" %}
         <img src="/img/bust.png" alt="" width="130" height="200">
       </header>
 
@@ -97,13 +98,21 @@
       </svg>
     </button>
 
+    {#- Fixed to the viewport, NOT inside the rail: .rail-inner keeps its width
+        and slides out of frame when the rail collapses, so anything in it goes
+        off-screen with her. A global preference has to outlive both states. -#}
+    {% include "sound-toggle.njk" %}
+
     <aside class="rail">
       {#- The inner keeps its own width while the column closes, so she slides
           out of frame at full proportions instead of being squashed. -#}
       <div class="rail-inner">
         <img src="/img/rail-2.png" alt="Commissioned illustration of Fujimasa March">
+
+        {#- A signature block, not a nav bar: the details, then the name. The
+            heaviest element anchors the bottom edge. Links from site.json so
+            there is one place to change them. -#}
         <div class="rail-foot">
-          {#- From _data/site.json so there is one place to change them. -#}
           <div class="rail-links">
             <a href="mailto:{{ site.email }}">EMAIL</a>
             <a href="{{ site.github }}" rel="me">GITHUB</a>
@@ -116,6 +125,7 @@
 
   </div>
 
+  <script src="/js/sound.js"></script>
   <script src="/js/router.js"></script>
   <script src="/js/view-toggle.js"></script>
   <script src="/js/code-copy.js"></script>
