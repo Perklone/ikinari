@@ -146,6 +146,9 @@
     var a = e.target.closest && e.target.closest("a");
     if (!routable(a)) return;
     e.preventDefault();
+    if (a.classList.contains("back")) {
+      window.dispatchEvent(new CustomEvent("ikinari:cue", { detail: "back" }));
+    }
     go(a.href, true);
   });
 

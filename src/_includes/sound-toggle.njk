@@ -1,0 +1,13 @@
+{#- Rendered in the rail footer on desktop and in the masthead on mobile, so
+    the mute is reachable wherever a cue can fire. Same speaker glyph family
+    as the callout icons: thin uniform stroke, geometric, rounded joins. -#}
+<button class="sound-toggle" type="button" aria-pressed="true" aria-label="Turn sound off">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 9.5h3.4L12 5.6v12.8L7.4 14.5H4z"/>
+    <path class="wave-on" d="M15.6 9.6a3.6 3.6 0 0 1 0 4.8"/>
+    <path class="wave-on" d="M18.2 7.2a7 7 0 0 1 0 9.6"/>
+    <path class="wave-off" d="M16.2 10.2l4.4 3.6"/>
+    <path class="wave-off" d="M20.6 10.2l-4.4 3.6"/>
+  </svg>
+</button>

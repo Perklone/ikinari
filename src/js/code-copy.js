@@ -28,6 +28,7 @@
       navigator.clipboard.writeText(code.innerText).then(
         function () {
           label(btn, "Copied", true);
+          window.dispatchEvent(new CustomEvent("ikinari:cue", { detail: "copy" }));
           window.setTimeout(function () {
             label(btn, "Copy", false);
           }, RESET_MS);

@@ -26,7 +26,15 @@
   // transition here would cross-fade identical content, which is what made
   // the old version blink. Reduced motion is handled by --toggle-dur.
   function toggle() {
-    apply(current() === "full" ? "split" : "full", true);
+    var next = current() === "full" ? "split" : "full";
+    apply(next, true);
+    // Named by what the rail does, not by the state: leaving is one falling
+    // note, returning is two rising ones.
+    cue(next === "full" ? "railOut" : "railIn");
+  }
+
+  function cue(name) {
+    window.dispatchEvent(new CustomEvent("ikinari:cue", { detail: name }));
   }
 
   // data-view is already set by the inline script in <head>, before first
