@@ -32,6 +32,22 @@
 
   var TARGET = ".pane-content";
 
+  // We restore scroll ourselves; without this the browser also tries and the
+  // two fight over the same frame.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  // The pane is the scroll container above 900px, the window below it.
+  function scrollPos() {
+    var pane = document.querySelector(".pane");
+    return pane && pane.scrollTop ? pane.scrollTop : (window.scrollY || 0);
+  }
+
+  function scrollToY(y) {
+    var pane = document.querySelector(".pane");
+    if (pane) pane.scrollTop = y;
+    window.scrollTo(0, y);
+  }
+
   var TIMING = {
     fadeOut: 140,   // outgoing pane, opacity 1 → 0
     fadeIn:  200,   // incoming pane, opacity 0 → 1
@@ -84,7 +100,7 @@
     function clear() { el.style.opacity = ""; }
   }
 
-  function render(html, url) {
+  function render(html, url, restoreY) {
     var doc = new DOMParser().parseFromString(html, "text/html");
     var incoming = doc.querySelector(TARGET);
     var here = document.querySelector(TARGET);
@@ -110,10 +126,17 @@
 
     if (doc.title) document.title = doc.title;
 
-    // The pane is the scroll container on desktop; the window is on mobile.
-    var pane = document.querySelector(".pane");
-    if (pane) pane.scrollTop = 0;
-    window.scrollTo(0, 0);
+    // Back and forward return you to where you were; a fresh navigation
+    // starts at the top. Resetting to 0 unconditionally was a regression
+    // against plain links, which restore position for free.
+    scrollToY(restoreY || 0);
+
+    // A DOM swap is silent to a screen reader — nothing announces that the
+    // page changed. Moving focus to the new heading both announces it and
+    // puts keyboard users at the start of the new content.
+    var heading = incoming.querySelector("h1") || incoming;
+    heading.setAttribute("tabindex", "-1");
+    try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
 
     // Anything that decorates page content re-runs here.
     window.dispatchEvent(new CustomEvent("ikinari:navigated"));
@@ -122,9 +145,14 @@
 
   var inflight = null;
 
-  function go(url, push) {
+  function go(url, push, restoreY) {
     var token = (inflight = {});
     var here = document.querySelector(TARGET);
+
+    // Record where we were before leaving, against the entry we are leaving.
+    if (push) {
+      try { history.replaceState({ scroll: scrollPos() }, ""); } catch (e) {}
+    }
 
     // Both start now. Whichever is slower gates the swap.
     var loaded = fetch(url, { credentials: "same-origin" }).then(function (res) {
@@ -136,7 +164,9 @@
     Promise.all([loaded, faded])
       .then(function (out) {
         if (inflight !== token) return;                      // superseded
-        if (render(out[0], url) && push) history.pushState(null, "", url);
+        if (render(out[0], url, restoreY) && push) {
+          history.pushState({ scroll: 0 }, "", url);
+        }
       })
       .catch(function () { location.href = url; });
   }
@@ -152,7 +182,7 @@
     go(a.href, true);
   });
 
-  window.addEventListener("popstate", function () {
-    go(location.href, false);
+  window.addEventListener("popstate", function (e) {
+    go(location.href, false, (e.state && e.state.scroll) || 0);
   });
 })();
