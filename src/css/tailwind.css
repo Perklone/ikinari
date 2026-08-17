@@ -428,29 +428,51 @@
     @apply relative;
 }
 
-/* The marker. Current role is ribbon — the one place the accent appears here,
-   same "this one is live" job it does on the (new) flag. */
-.org::before {
+/* `relative` so the marker below positions against the heading at every width,
+   not just where the heading is sticky. */
+.org-name {
+    @apply relative text-row font-medium text-ink;
+    padding: 7px 0 5px;
+}
+
+/* The marker rides on the HEADING, not the article — otherwise the dot stays
+   behind with the section while the name travels, and they separate.
+   Current company is ribbon: the one place the accent appears here, the same
+   "this one is live" job it does on the (new) flag. */
+.org-name::before {
     content: "";
     @apply absolute rounded-full bg-edge;
     left: -32px;
-    top: 9px;
+    top: 15px;
     width: 9px;
     height: 9px;
     box-shadow: 0 0 0 3px theme(colors.paper);
 }
 
-.org:first-child::before {
+.org:first-child .org-name::before {
     @apply bg-ribbon;
     width: 11px;
     height: 11px;
     left: -33px;
 }
 
-.org-name { @apply text-row font-medium text-ink; }
+/* Pinning is a mobile answer to a mobile condition: StraitsX is ~650px of one
+   role on a phone, so its heading leaves the screen long before its bullets
+   do. On desktop three sections fit at once, and sticky then holds a finished
+   section's name on screen while you read the next one — a stale label. The
+   spine is the index there. */
+@media (max-width: 899px) {
+    .org-name {
+        @apply sticky z-10 bg-paper;
+        top: 0;
+    }
+}
 
+/* Full ink, while the achievements below stay ink-soft. The blurb says WHERE
+   you were; the bullets are supporting detail, and the résumé carries the
+   exhaustive version. Hierarchy by colour alone — no new size. */
 .org-note {
-    @apply font-serif text-note text-ink-soft;
+    @apply font-serif text-note text-ink;
     margin-top: 6px;
     text-wrap: pretty;
 }
