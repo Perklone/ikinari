@@ -20,6 +20,28 @@ function escapeHtml(s) {
         .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
+
+// GitHub-style alerts: `> [!NOTE]`, `> [!WARNING]`, `> [!DANGER]`, with an
+// optional custom label on the same line — `> [!WARNING] Don't do this`.
+//
+// Written as blockquotes so the source stays portable: on GitHub, in an
+// editor preview, or in any other renderer they degrade to a quoted block
+// rather than to broken syntax.
+// Circle, triangle and cross are the universal semantic shapes AND the
+// PlayStation face buttons, so the game reference costs nothing in clarity.
+// Drawn XMB/Wii-style: thin uniform stroke, purely geometric, fully rounded
+// joins, no fill — the era's look is the drawing, not the symbol.
+const ICON = (paths) =>
+    `<svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" ` +
+    `stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+
+const CALLOUTS = {
+    note:    { label: "NOTE",    icon: ICON('<circle cx="12" cy="12" r="9"/><path d="M12 11.2v5"/><path d="M12 7.6h.01"/>') },
+    tip:     { label: "TIP",     icon: ICON('<circle cx="12" cy="12" r="9"/><path d="M12 11.2v5"/><path d="M12 7.6h.01"/>') },
+    warning: { label: "WARNING", icon: ICON('<path d="M12 4.6 20.7 19.4H3.3z"/><path d="M12 10.2v4"/><path d="M12 17h.01"/>') },
+    danger:  { label: "DANGER",  icon: ICON('<path d="M6.4 6.4l11.2 11.2"/><path d="M17.6 6.4L6.4 17.6"/>') },
+};
+
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const NEW_FOR_DAYS = 60;
 const WORDS_PER_MINUTE = 200;
@@ -71,6 +93,23 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addCollection("essay", (api) =>
         api.getFilteredByTag("essay").sort((a, b) => b.date - a.date)
     );
+
+    eleventyConfig.addTransform("callouts", function (content) {
+        if (!this.outputPath || !this.outputPath.endsWith(".html")) return content;
+        return content.replace(
+            /<blockquote>\s*<p>\[!(\w+)\]([^\n<]*)\n?([\s\S]*?)<\/blockquote>/g,
+            (whole, rawType, rawLabel, body) => {
+                const type = rawType.toLowerCase();
+                const spec = CALLOUTS[type];
+                if (!spec) return whole;                     // unknown: leave as a quote
+                const label = (rawLabel || "").trim() || spec.label;
+                return `<div class="callout is-${type}">` +
+                       `<p class="callout-label">${spec.icon}<span>${label}</span></p>` +
+                       `<p>${body.replace(/<\/p>\s*$/, "")}</p></div>`;
+            }
+        );
+    });
+
     eleventyConfig.addPassthroughCopy("src/img");
     eleventyConfig.addPassthroughCopy("src/js");
     eleventyConfig.addPassthroughCopy("src/files");

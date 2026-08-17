@@ -147,9 +147,12 @@
         padding: 44px 32px 0;
     }
 
+    /* Stacked, right-aligned: a wordmark and a utility row sharing a baseline
+       read as a nav bar. Separated, they read as a signature. */
     .rail-foot {
-        @apply flex flex-none items-end gap-6;
-        padding: 18px 44px 30px;
+        @apply flex flex-none flex-col items-end;
+        gap: 9px;
+        padding: 18px 44px 32px;
     }
 
     /* The control is a drawer pull on the rail's edge, not a floating object —
@@ -200,8 +203,16 @@
         transform: rotate(180deg);
     }
 
+    /* Middot separators, matching the essay meta line and the index rows. */
     .rail-links {
-        @apply flex gap-5;
+        @apply flex items-center;
+        gap: 0;
+    }
+
+    .rail-links a + a::before {
+        content: "·";
+        @apply text-meta;
+        margin: 0 9px;
     }
 
     .rail-links a {
@@ -212,8 +223,9 @@
         @apply text-ribbon;
     }
 
+
+
     .rail-foot .sig {
-        @apply ml-auto;
         font-size: 26px;
     }
 
@@ -568,11 +580,6 @@
 .article a { @apply text-ink; text-underline-offset: 3px; }
 .article a:hover { @apply text-ribbon; }
 
-.pull {
-    @apply border-l-2 border-ribbon font-serif italic text-pull text-ink;
-    padding-left: 16px;
-}
-
 /* .chip / .chips deleted. They were the only decorative rectangles on a site
    built from rules, and they shared radius, border colour and text size with
    .button — non-interactive elements wearing the interactive costume. Topics
@@ -608,6 +615,41 @@
     @apply flex items-end justify-between gap-4 overflow-hidden bg-plate;
     height: 108px;
     padding: 0 var(--gutter, 22px) 18px;
+}
+
+/* The mute lives beside the signature on a phone and in the rail footer on
+   desktop, so it is reachable wherever a cue can fire. */
+.sound-toggle {
+    @apply flex flex-none cursor-pointer items-center border-0 bg-transparent p-0 text-ink;
+}
+
+.sound-toggle svg {
+    @apply block;
+    width: 15px;
+    height: 15px;
+}
+
+.sound-toggle:hover { @apply text-ribbon; }
+
+.sound-toggle[aria-pressed="true"] .wave-off,
+.sound-toggle[aria-pressed="false"] .wave-on { display: none; }
+
+.masthead .sound-toggle { margin-left: 10px; margin-right: auto; }
+
+/* Above the tab bar and left of the gutter, in the corner nothing else uses.
+   Fixed, so it survives the rail collapsing and the pane scrolling. */
+.split > .sound-toggle { display: none; }
+
+@media (min-width: 900px) {
+    .split > .sound-toggle {
+        @apply fixed text-meta;
+        display: flex;
+        top: 24px;
+        left: 24px;
+        z-index: 3;
+    }
+
+    .split > .sound-toggle:hover { @apply text-ink; }
 }
 
 .masthead img {
@@ -646,6 +688,72 @@
 .article > .button {
     width: auto;
 }
+
+
+/* ─────────────────────────────────────────────────────────
+ * CALLOUTS
+ *
+ * The 2px left rule is the pull quote's old gesture, reused for something
+ * that earns it: the pull spent a rationed vermilion slot on decoration,
+ * a DANGER callout spends it on meaning.
+ *
+ * Severity is carried by label AND colour, never colour alone. The right
+ * corners round while the left rule stays square — a small asymmetry that
+ * keeps the block friendly without adding a new shape to the system.
+ * ───────────────────────────────────────────────────────── */
+
+.callout {
+    @apply border-l-2;
+    padding: 14px 20px 16px;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Scoped to .callout so it outranks `.article p` (0,1,1), which otherwise
+   wins over a bare `.callout-label` (0,1,0) and hands the label Newsreader
+   at 20px — the label IS a <p> inside .article. */
+.callout .callout-label {
+    @apply flex items-center gap-2 text-kicker font-sans font-medium uppercase;
+    margin-bottom: 7px;
+}
+
+.callout-icon {
+    @apply block flex-none;
+    width: 17px;
+    height: 17px;
+}
+
+/* The label is Zen because it is a headline; the body is Newsreader because
+   it is prose. Same split as the rest of the site — the callout is not an
+   exception to the rule, it just contains both kinds of text. */
+.callout > p:not(.callout-label) {
+    @apply font-serif text-ink-soft;
+    font-size: 17px;
+    line-height: 1.75;
+    text-wrap: pretty;
+}
+
+.callout.is-note,
+.callout.is-tip {
+    background: #EBEEE9;
+    border-color: theme(colors.code-str);
+}
+
+.callout.is-note .callout-label,
+.callout.is-tip .callout-label { color: theme(colors.code-str); }
+
+.callout.is-warning {
+    background: #F1EDE5;
+    border-color: theme(colors.warn);
+}
+
+.callout.is-warning .callout-label { color: theme(colors.warn); }
+
+.callout.is-danger {
+    background: #F7EBE8;
+    border-color: theme(colors.ribbon);
+}
+
+.callout.is-danger .callout-label { color: theme(colors.ribbon); }
 
 /* ─────────────────────────────────────────────────────────
  * CODE — option A, light plate.

@@ -30,6 +30,11 @@ module.exports = {
         'code-key': '#A93526',   // ribbon deepened — keywords ...... 5.64:1
         'code-str': '#4B6845',   // sage hue 110° darkened — strings  5.40:1
         'code-com': '#5E6877',   // meta deepened — comments ........ 4.88:1
+
+        // ── Callout status. Gold is sampled from the gold trim on her jacket
+        //    and deepened the same way code-key was: the palette's rule is that
+        //    colours come from the artwork, not from a generator.
+        warn: '#8F6317',         // jacket gold deepened ............ 5.11:1
       },
       fontFamily: {
         // Two voices: Zen carries UI and headings, Newsreader carries language.
