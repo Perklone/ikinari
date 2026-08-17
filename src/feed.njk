@@ -16,8 +16,17 @@ eleventyExcludeFromCollections: true
       <link>{{ site.url }}{{ post.url }}</link>
       <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
       <pubDate>{{ post.date | rfc822 }}</pubDate>
-      {%- if post.data.pull %}
-      <description>{{ post.data.pull }}</description>
+      {#- The same summary the index row shows: an explicit `description` if the
+          post sets one, otherwise the opening paragraph cut to 150 chars. One
+          definition of "what this post is about", used in both places.
+          This replaced a guard on `post.data.pull` — a field left behind when
+          the pull quote was cut from the design. Nothing ever set it, so the
+          guard was always false and every item shipped with no description at
+          all: subscribers got a bare headline. -#}
+      {%- set summary = post.data.description %}
+      {%- if not summary %}{% set summary = post.templateContent | excerpt(150) %}{% endif %}
+      {%- if summary %}
+      <description>{{ summary }}</description>
       {%- endif %}
     </item>
     {%- endfor %}

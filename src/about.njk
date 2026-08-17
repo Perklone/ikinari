@@ -6,24 +6,40 @@ title: About
 ---
 <h1 class="sr-only">About</h1>
 <div class="about">
-  <p class="about-p">Backend/DevEx Engineer with 2+ years of experience optimizing developer
-  productivity and building scalable payment infrastructure. Currently at StraitsX
-  (part of Fazz Financial Group).</p>
+  {#- TODO — every sentence from here to the hairline is scaffolding in the
+      wrong voice. The facts in it are real (Jakarta and StraitsX from the
+      résumé) but the phrasing is not yours. Rewrite as an introduction: who
+      you are, where you are, and why you started writing. -#}
+  <p class="about-lead">Hey — I'm Rizky, a backend engineer in Jakarta.</p>
 
-  <p class="about-p">Passionate about developer experience, performance optimization, and building
-  tools that make engineering teams more productive. Experience spans backend
-  development, infrastructure optimization, and platform engineering.</p>
+  <p class="about-p">I work on payment infrastructure at StraitsX. I started writing
+  here because some things take more than a week to understand, and those are
+  usually the ones worth writing down.</p>
 
   <div class="hairline"></div>
 
-  <dl class="facts">
+  {#- Touchpoints, not a spec sheet: NOW is one row among several, so the
+      engineer and everything else read as peers rather than as a career page
+      with hobbies appended. Values are sentences, which is why this list
+      takes the serif — see .facts-prose. -#}
+  <dl class="facts facts-prose">
+    {#- TODO — your voice, not mine. -#}
     <dt>NOW</dt>
-    <dd>Backend / DevEx at StraitsX, part of Fazz Financial Group</dd>
+    <dd>Backend and developer experience at StraitsX in Jakarta — regulated
+    stablecoin payments, mostly Ruby, some Go.</dd>
 
-    <dt>MOSTLY</dt>
-    <dd>Developer experience, performance optimization, platform engineering</dd>
+    {#- TODO — your voice, not mine. This row is the reason the page exists:
+        it is where the site stops being a résumé. -#}
+    <dt>ALSO</dt>
+    <dd>Riichi mahjong, the gym, and whatever's airing this season.</dd>
 
+    {#- The only contact links on the site — the rail carries the signature
+        alone now, and is display:none below 900px besides. All three are
+        labels, not values: the address stays out of the rendered page and
+        rides in the href. Middots match the essay meta line and the index
+        rows; the nbsp before each keeps it on the line it separates, so a
+        wrap never starts a line with punctuation. -#}
     <dt>REACH</dt>
-    <dd><a href="mailto:mrizky9601@gmail.com">mrizky9601@gmail.com</a></dd>
+    <dd class="links"><a href="mailto:{{ site.email }}">Email</a>&nbsp;· <a href="{{ site.github }}" rel="me">GitHub</a>&nbsp;· <a href="{{ site.linkedin }}" rel="me">LinkedIn</a></dd>
   </dl>
 </div>

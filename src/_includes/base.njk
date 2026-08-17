@@ -67,6 +67,12 @@
         <img src="/img/bust.png" alt="" width="130" height="200">
       </header>
 
+      {#- The nav is wrapped rather than extended: the signature below is not a
+          destination, and putting it inside the landmark would make a screen
+          reader read the name as a fourth section. The router's `.tabs .tab`
+          selectors are unaffected. -#}
+      <div class="tabrow">
+
       {#- aria-current is the semantic half of the vermilion rule. Without it
           the active tab is marked by a CSS class alone, which conveys nothing
           to assistive tech — the visual state had no counterpart. -#}
@@ -84,6 +90,16 @@
           <i></i><span>About</span>
         </a>
       </nav>
+
+        {#- Stands in for the rail's signature while the rail is collapsed, and
+            only then, so the name is never on screen twice. aria-hidden is
+            deliberate: collapsing sets the rail column to 0fr and .rail is
+            overflow:hidden, which clips the real signature visually but leaves
+            it in the accessibility tree. This is a visual restoration of
+            something that never left, so announcing it again would duplicate
+            the name for screen readers. -#}
+        <span class="tabsig" aria-hidden="true">Rizky Maulana</span>
+      </div>
 
       {#- The router swaps this element and nothing else. The rail, the seam
           and the masthead are never touched, so they cannot flicker. -#}
@@ -113,15 +129,24 @@
       <div class="rail-inner">
         <img src="/img/rail-2.png" alt="Commissioned illustration of Fujimasa March">
 
-        {#- A signature block, not a nav bar: the details, then the name. The
-            heaviest element anchors the bottom edge. Links from site.json so
-            there is one place to change them. -#}
+        {#- Attribution, not biography: it belongs against the artwork rather
+            than in a list about me.
+            Scoped to the rail on purpose. The masthead below 900px shows
+            bust.png, which is a DIFFERENT commission — carrying this credit
+            down there would attribute one artist's work to another piece.
+            Renders nothing while site.artist is empty, so an unfilled credit
+            ships silence rather than a placeholder. -#}
+        {%- if site.artist %}
+        <p class="rail-credit">Illustrated by the amazing
+          {%- if site.artistUrl %} <a href="{{ site.artistUrl }}" lang="ja">{{ site.artist }}</a>
+          {%- else %} <span lang="ja">{{ site.artist }}</span>{% endif %}!</p>
+        {%- endif %}
+
+        {#- A signature, nothing else. The utility row that used to sit above
+            the name was the only thing making this read as a nav bar; contact
+            now lives in one place, the About facts list, which the masthead
+            keeps one click away from every page. -#}
         <div class="rail-foot">
-          <div class="rail-links">
-            <a href="mailto:{{ site.email }}">EMAIL</a>
-            <a href="{{ site.github }}" rel="me">GITHUB</a>
-            <a href="{{ site.linkedin }}" rel="me">LINKEDIN</a>
-          </div>
           <span class="sig">Rizky Maulana</span>
         </div>
       </div>
