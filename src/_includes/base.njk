@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {%- set pageTitle = title + " — " + site.name if title else site.title %}
-  {%- set pageDesc = description if description else site.description %}
+  {#- An essay describes itself: without this every shared essay link showed
+      the site blurb instead of what the piece is about. -#}
+  {%- if description %}{% set pageDesc = description %}
+  {%- elif layout == 'essay.njk' %}{% set pageDesc = content | excerpt(180) %}
+  {%- else %}{% set pageDesc = site.description %}{% endif %}
   {%- set pageUrl = site.url + page.url %}
   <title>{{ pageTitle }}</title>
   <meta name="description" content="{{ pageDesc }}">

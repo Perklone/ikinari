@@ -13,6 +13,12 @@ permalink: /
         <span class="leader"></span>
         <span class="year">{{ post.date | year }}</span>
       </span>
+      {#- Headline, standfirst, byline — the newspaper order. The dek is the
+          opening paragraph unless the post overrides it with `description`. -#}
+      <span class="row-dek">
+        {%- if post.data.description %}{{ post.data.description }}
+        {%- else %}{{ post.templateContent | excerpt(150) }}{% endif -%}
+      </span>
       <span class="row-meta">
         {%- for topic in post.data.topics %}{{ topic }} · {% endfor -%}
         {{ post.templateContent | readingTime }} MIN

@@ -39,12 +39,15 @@ const CALLOUTS = {
     note:    { label: "NOTE",    icon: ICON('<circle cx="12" cy="12" r="9"/><path d="M12 11.2v5"/><path d="M12 7.6h.01"/>') },
     tip:     { label: "TIP",     icon: ICON('<circle cx="12" cy="12" r="9"/><path d="M12 11.2v5"/><path d="M12 7.6h.01"/>') },
     warning: { label: "WARNING", icon: ICON('<path d="M12 4.6 20.7 19.4H3.3z"/><path d="M12 10.2v4"/><path d="M12 17h.01"/>') },
-    danger:  { label: "DANGER",  icon: ICON('<path d="M6.4 6.4l11.2 11.2"/><path d="M17.6 6.4L6.4 17.6"/>') },
+    // Slightly heavier stroke: a bare mark reads lighter than the same weight
+    // inside a circle or triangle, and this is the highest severity.
+    danger:  { label: "DANGER",  icon: ICON('<g stroke-width="2.1"><path d="M6.4 6.4l11.2 11.2"/><path d="M17.6 6.4L6.4 17.6"/></g>') },
 };
 
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const NEW_FOR_DAYS = 60;
 const WORDS_PER_MINUTE = 200;
+const CODE_PER_MINUTE  = 70;   // tokens/min — code is read, not skimmed
 
 module.exports = function(eleventyConfig) {
     eleventyConfig.addPlugin(syntaxHighlight);
@@ -54,12 +57,19 @@ module.exports = function(eleventyConfig) {
     // UTC accessors throughout: a date-only frontmatter value parses as
     // midnight UTC, and local getters would shift it a day west of Greenwich.
 
+    // Code is read line by line, not skimmed, so counting it at prose speed
+    // understates a technical post — the wrong direction to be wrong in on a
+    // blog whose evidence is code.
+    const countWords = (html) =>
+        String(html || "").replace(/<[^>]*>/g, " ").split(/\s+/).filter(Boolean).length;
+
     eleventyConfig.addFilter("readingTime", (content) => {
-        const words = String(content || "")
-            .replace(/<[^>]*>/g, " ")
-            .split(/\s+/)
-            .filter(Boolean).length;
-        return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
+        const html = String(content || "");
+        const code = (html.match(/<pre[\s\S]*?<\/pre>/g) || []).reduce(
+            (n, block) => n + countWords(block), 0
+        );
+        const prose = Math.max(0, countWords(html) - code);
+        return Math.max(1, Math.ceil(prose / WORDS_PER_MINUTE + code / CODE_PER_MINUTE));
     });
 
     // 2026-03-02 -> "MAR 02, 2026"
@@ -80,6 +90,30 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addFilter("isNew", (value) => {
         const age = Date.now() - new Date(value).getTime();
         return age >= 0 && age < NEW_FOR_DAYS * 86400000;
+    });
+
+    // The opening paragraph, as a standalone summary. Matches the FIRST
+    // attribute-less <p>, which skips the meta line, callout labels and
+    // anything else that carries a class — so it lands on real prose.
+    //
+    // Derived rather than authored: an essay's first paragraph already has to
+    // say what the piece is about, so a separate summary field would be a
+    // second copy of the same sentence, free to drift. `description:` in
+    // frontmatter overrides it when the opening does not stand alone.
+    eleventyConfig.addFilter("excerpt", (content, max) => {
+        const match = String(content || "").match(/<p>([\s\S]*?)<\/p>/);
+        if (!match) return "";
+        let text = match[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+        const limit = max || 180;
+        if (text.length > limit) {
+            let cut = text.slice(0, limit);
+            cut = cut.slice(0, cut.lastIndexOf(" "));
+            // Never end on a bare number: "p90 latency down 23…" severs the
+            // value from its unit and reads as a typo rather than a cut.
+            cut = cut.replace(/[\s(]+[\d.,]+$/, "");
+            text = cut.replace(/[,;:.\-—]$/, "") + "…";
+        }
+        return text;
     });
 
     // Returns the essay for a slug, or null. Experience links an achievement
