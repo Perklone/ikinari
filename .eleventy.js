@@ -104,6 +104,24 @@ module.exports = function(eleventyConfig) {
         const match = String(content || "").match(/<p>([\s\S]*?)<\/p>/);
         if (!match) return "";
         let text = match[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+        // Entities have to come back out, not just tags. `content` is rendered
+        // HTML, so markdown has already turned & into &amp; — leave that in and
+        // every consumer escapes it a second time: the index dek printed
+        // "R&amp;D", and the feed shipped "R&amp;amp;D" to subscribers.
+        // Returning true plain text lets each caller escape exactly once.
+        // &amp; is decoded LAST, or "&amp;lt;" would collapse to "<" instead of
+        // the literal "&lt;" the author wrote. Decoding before the cut also
+        // keeps the character count honest — "&amp;" is five characters that
+        // occupy one.
+        text = text
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#0*39;|&apos;/g, "'")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+            .replace(/&#[xX]([0-9a-fA-F]+);/g, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+            .replace(/&amp;/g, "&");
         const limit = max || 180;
         if (text.length > limit) {
             let cut = text.slice(0, limit);
