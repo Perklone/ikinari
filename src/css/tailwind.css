@@ -45,6 +45,10 @@
        carries the document outline for assistive tech and heading navigation
        while the design keeps no visible page title. */
 
+    /* Programmatic focus after a router swap: announced, but no visible ring.
+       :focus-visible still shows one for real keyboard focus. */
+    [tabindex="-1"]:focus { outline: none; }
+
     /* One rule covers every link and button on the site. Six of eight
        interactive elements previously had no visible focus at all. */
     :where(a, button):focus-visible {
@@ -311,6 +315,17 @@
     @apply flex items-baseline gap-3;
 }
 
+/* The line that answers "what is this". Serif, because it is prose — the
+   title above and the meta below are both Zen, so the dek reads as the one
+   piece of actual writing in the row. */
+/* No measure of its own: capped at 62ch inside an 810px row, the dek stopped
+   two-thirds across and its right edge aligned with nothing. The row is
+   already inside --measure; a second cap just adds a second edge. */
+.row-dek {
+    @apply font-serif text-note text-ink-soft;
+    text-wrap: pretty;
+}
+
 .row-meta {
     @apply text-kicker font-medium text-meta uppercase;
 }
@@ -466,9 +481,7 @@
 }
 
 .stint-items > li {
-    @apply relative font-serif text-ink-soft;
-    font-size: 16px;
-    line-height: 1.7;
+    @apply relative font-serif text-note text-ink-soft;
     padding-left: 16px;
     text-wrap: pretty;
 }
@@ -485,8 +498,7 @@
 /* Its own line, not inline. Run into the end of the achievement, the essay
    title read as a continuation of the sentence. */
 .role-essay {
-    @apply mt-1.5 flex w-max items-center gap-2 font-sans text-ink no-underline;
-    font-size: 13px;
+    @apply mt-1.5 flex w-max items-center gap-2 font-sans text-period text-ink no-underline;
 }
 
 .role-essay-tag {
@@ -634,7 +646,9 @@
 .sound-toggle[aria-pressed="true"] .wave-off,
 .sound-toggle[aria-pressed="false"] .wave-on { display: none; }
 
-.masthead .sound-toggle { margin-left: 10px; margin-right: auto; }
+/* No margins: the masthead is already justify-between, so the toggle sits in
+   the gap between name and figure. margin-right:auto was overriding that and
+   pinning it against the signature. */
 
 /* Above the tab bar and left of the gutter, in the corner nothing else uses.
    Fixed, so it survives the rail collapsing and the pane scrolling. */
@@ -726,9 +740,7 @@
    it is prose. Same split as the rest of the site — the callout is not an
    exception to the rule, it just contains both kinds of text. */
 .callout > p:not(.callout-label) {
-    @apply font-serif text-ink-soft;
-    font-size: 17px;
-    line-height: 1.75;
+    @apply font-serif text-note text-ink-soft;
     text-wrap: pretty;
 }
 

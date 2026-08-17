@@ -43,9 +43,13 @@ module.exports = {
         serif: ['Newsreader', 'serif'],
         mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
+      // The scale covers text that RECURS across components. Six sizes are
+      // deliberately left local to their component and are not tokens:
+      // the signature (24/26 — bigger where the rail has room), the code block
+      // and its filename (13.5/11.5), the ESSAY tag (9), and the About facts
+      // values (15). A token used once is not a token, it is a rename.
       fontSize: {
         essay: ['38px', { lineHeight: '1.30', letterSpacing: '0.004em' }],  // 700
-        pull: ['21px', { lineHeight: '1.60' }],                             // serif italic
         prose: ['20px', { lineHeight: '1.85' }],                            // serif
         row: ['19px', { lineHeight: '1.45', letterSpacing: '0.008em' }],    // 500
         note: ['17px', { lineHeight: '1.80' }],                             // serif
