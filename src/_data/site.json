@@ -7,5 +7,8 @@
   "email": "mrizky9601@gmail.com",
   "github": "https://github.com/Perklone",
   "linkedin": "https://www.linkedin.com/in/rizky-maulana01/",
-  "locale": "en_US"
+  "locale": "en_US",
+  "_artist": "Credit for the rail illustration. The credit line renders ONLY when `artist` is non-empty, so leaving these blank ships nothing rather than shipping a placeholder. Fill both in to turn it on.",
+  "artist": "千草もちくさ",
+  "artistUrl": "https://www.pixiv.net/en/users/3258473"
 }
