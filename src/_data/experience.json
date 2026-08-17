@@ -1,5 +1,5 @@
 {
-  "_comment": "One object per COMPANY. A promotion or role change is another entry in that company's `roles` array — the org name, blurb and spine marker are not repeated. Skills are deliberately absent — half of them already appear inside an achievement, and the resume PDF covers keyword breadth better than a list of bare nouns can. `essay` is a slug in src/posts/essays/; if no post matches the line renders as plain text, so this file can never link to writing that does not exist.",
+  "_comment": "One object per COMPANY. A promotion or role change is another entry in that company's `roles` array — the org name, blurb and spine marker are not repeated. Skills are deliberately absent — half of them already appear inside an achievement, and the resume PDF covers keyword breadth better than a list of bare nouns can. `essay` is a slug in src/posts/essays/; if no post matches the line renders as plain text, so this file can never link to writing that does not exist. No item sets `essay` right now — the field is still supported, add it back to a line once the matching post exists.",
   "jobs": [
     {
       "org": "StraitsX",
@@ -11,24 +11,19 @@
           "current": true,
           "items": [
             {
-              "text": "CI runtime down 61% across three Rails codebases, adopted as an org-wide standard",
-              "essay": "cutting-ci-runtime"
+              "text": "CI runtime down 61% across three Rails codebases, adopted as an org-wide standard"
             },
             {
-              "text": "Ruby 3.1 to 3.3 with YJIT in Kubernetes — p90 latency down 23%, CPU efficiency up 15%",
-              "essay": "ruby-yjit"
+              "text": "Ruby 3.1 to 3.3 with YJIT in Kubernetes — p90 latency down 23%, CPU efficiency up 15%"
             },
             {
-              "text": "AWS ElastiCache migration for a payment service, Singapore to Jakarta",
-              "essay": "elasticache"
+              "text": "AWS ElastiCache migration for a payment service, Singapore to Jakarta"
             },
             {
-              "text": "Payment routing inefficiency worth about $33K a year",
-              "essay": "routing"
+              "text": "Payment routing inefficiency in fund transfers, about $33K a year in infrastructure cost"
             },
             {
-              "text": "Go microservice for payment processing alongside the Ruby fleet",
-              "essay": "go-ruby"
+              "text": "Go microservice for payment processing, maintained alongside the Ruby fleet"
             }
           ]
         }
@@ -43,8 +38,7 @@
           "period": "MAY — AUG 2024",
           "items": [
             {
-              "text": "Source generation for Protobuf and Smithy schemas in Scala-CLI, using Scala and Bloop",
-              "essay": "scala-cli"
+              "text": "Source generation for Protobuf and Smithy schemas in Scala-CLI, using Scala and Bloop"
             }
           ]
         }
@@ -59,8 +53,7 @@
           "period": "MAY — AUG 2023",
           "items": [
             {
-              "text": "Favourites for SMB and UPnP media, in Objective-C and Swift",
-              "essay": "vlc"
+              "text": "Favourites for SMB and UPnP media, in Objective-C and Swift"
             },
             {
               "text": "Playback restoration fix through VLCKit"
@@ -81,11 +74,10 @@
               "text": "Led three iOS engineers on a social RSVP app built with UIKit"
             },
             {
-              "text": "iPad-first app teaching arithmetic through interactive storytelling"
+              "text": "iPad-first app teaching K-12 students arithmetic through interactive storytelling"
             },
             {
-              "text": "One of 350 global winners of the Apple WWDC 2022 Swift Student Challenge",
-              "essay": "wwdc"
+              "text": "One of 350 global winners of the Apple WWDC 2022 Swift Student Challenge"
             }
           ]
         }
